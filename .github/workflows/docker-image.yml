@@ -23,15 +23,15 @@ jobs:
         run: docker push docker.io/${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}:v1
 
   update_on_linode:
-    name: updating docker image on linode using ssh
+    name: updating docker image on EC2 using ssh
     needs: push_to_registry
     runs-on: ubuntu-latest
 
     steps:
-      - name: executing remote ssh commands using password
+      - name: executing remote ssh commands using key
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          script: bash update.sh; exit
+          script: docker stop ${{ secrets.DOCKER_CONTAINER_NAME }} && docker rm ${{ secrets.DOCKER_CONTAINER_NAME }} && docker pull docker.io/${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}:v1 && docker run -d -p 3000:80 --name ${{ secrets.DOCKER_CONTAINER_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}:v1 && exit
