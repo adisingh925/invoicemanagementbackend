@@ -8,6 +8,7 @@ const port = process.env.PORT
 
 app.use(express.json());
 
+//All routes
 app.use("/", require("./routes/ping"));
 app.use("/", require("./routes/login"));
 app.use("/", require("./routes/signup"));
