@@ -1,7 +1,22 @@
 const express = require("express");
-const upload = require("../middleware/multer");
 const verifytoken = require("../middleware/verifyToken");
 const router = express.Router();
+const multer = require("multer");
+const storage = multer.memoryStorage();
+
+const fileFilter = (_req, file, cb) => {
+  if (file.mimetype !== "application/pdf") {
+    cb(new Error("Invalid file type!"), false);
+  }
+
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 1024 * 1024 * 1 },
+});
 
 /**
  * @route POST /upload
@@ -9,6 +24,12 @@ const router = express.Router();
 router.post("/upload", verifytoken, upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ msg: "Please upload a file!", code: -1 });
+    } else if (file.size === 0) {
+      return res.status(400).json({ msg: "File is empty!", code: -1 });
+    }
 
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,

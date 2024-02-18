@@ -4,8 +4,10 @@
 const express = require("express");
 const app = express();
 const http = require("http");
+const multer = require("multer");
 require("dotenv").config();
 const port = process.env.PORT;
+const httpServer = http.createServer(app);
 
 app.use(express.json());
 
@@ -17,7 +19,15 @@ app.use("/", require("./routes/createTable"));
 app.use("/", require("./routes/upload"));
 app.use("/", require("./routes/wildCard"));
 
-const httpServer = http.createServer(app);
+/**
+ * Global error handler
+ */
+app.use((error, _req, res, next) => {
+  if (error) {
+    res.status(500).json({ msg: error.message, code: -1 });
+  }
+  next();
+});
 
 /**
  * starting http server
