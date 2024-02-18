@@ -3,13 +3,26 @@
 // Importing required modules
 const express = require("express");
 const app = express();
+const fs = require("fs");
 const http = require("http");
-const multer = require("multer");
+const https = require("https");
+const checkBusy = require("./middleware/toobusy");
 require("dotenv").config();
-const port = process.env.PORT;
+
 const httpServer = http.createServer(app);
 
-app.use(express.json());
+const httpsServer = https.createServer(
+  {
+    key: fs.readFileSync("ssl/key.key"),
+    cert: fs.readFileSync("ssl/certificate_chain.cer"),
+    requestCert: true,
+    rejectUnauthorized: false,
+  },
+  app
+);
+
+app.use(checkBusy);
+app.use(express.json({ limit: "1mb" }));
 
 //All routes
 app.use("/", require("./routes/ping"));
@@ -29,9 +42,10 @@ app.use((error, _req, res, next) => {
   next();
 });
 
-/**
- * starting http server
- */
 httpServer.listen(process.env.HTTP_PORT, () => {
   console.log(`HTTP Server running on port ${process.env.HTTP_PORT}`);
+});
+
+httpsServer.listen(process.env.HTTPS_PORT, () => {
+  console.log(`HTTPS Server running on port ${process.env.HTTPS_PORT}`);
 });

@@ -4,12 +4,14 @@ const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const { validationResult, body } = require("express-validator");
 const { getUser } = require("../database/db");
+const { loginRateLimiter } = require("../ratelimiters/rateLimiters");
 
 /**
  * @post /login
  */
 router.post(
   "/login",
+  loginRateLimiter,
   [
     body("email", "Enter a valid email").trim().isEmail().escape(),
     body("password", "Password must be atleast 6 characters")
@@ -17,15 +19,15 @@ router.post(
       .escape(),
   ],
   async (req, res) => {
-    const result = validationResult(req);
-
-    if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
-    }
-
-    const { email, password } = req.body;
-
     try {
+      const result = validationResult(req);
+
+      if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+      }
+
+      const { email, password } = req.body;
+
       let user = await getUser(email);
 
       if (user == -1) {
