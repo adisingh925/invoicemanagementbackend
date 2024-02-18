@@ -46,7 +46,6 @@ const createUserTable = () => {
         id INT AUTO_INCREMENT PRIMARY KEY, 
         username VARCHAR(255) UNIQUE NOT NULL, 
         password VARCHAR(255) NOT NULL, 
-        bucketName VARCHAR(255) NOT NULL, 
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
         updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`;
@@ -65,11 +64,11 @@ const createUserTable = () => {
 
 const createUser = async (username, password, bucketName) => {
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO ?? (username, password, bucketName) VALUES (?, ?, ?)`;
+    var query = `INSERT INTO ?? (username, password) VALUES (?, ?)`;
 
     connection.query(
       query,
-      [process.env.USER_TABLE_NAME, username, password, bucketName],
+      [process.env.USER_TABLE_NAME, username, password],
       function (err) {
         if (err) {
           console.log(err.message);

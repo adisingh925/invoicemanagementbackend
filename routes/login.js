@@ -5,6 +5,9 @@ var jwt = require("jsonwebtoken");
 const { validationResult, body } = require("express-validator");
 const { getUser } = require("../database/db");
 
+/**
+ * @post /login
+ */
 router.post(
   "/login",
   [

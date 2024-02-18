@@ -33,7 +33,7 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       const securePassword = await bcrypt.hash(req.body.password, salt);
 
-      await createUser(req.body.email, securePassword, "bucketName");
+      await createUser(req.body.email, securePassword);
 
       const tokenPayload = {
         email: req.body.email,

@@ -14,6 +14,7 @@ app.use("/", require("./routes/ping"));
 app.use("/", require("./routes/login"));
 app.use("/", require("./routes/signup"));
 app.use("/", require("./routes/createTable"));
+app.use("/", require("./routes/upload"));
 app.use("/", require("./routes/wildCard"));
 
 const httpServer = http.createServer(app);
