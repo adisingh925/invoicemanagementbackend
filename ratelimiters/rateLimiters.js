@@ -1,6 +1,6 @@
-const rateLimit = require("express-rate-limit");
+import rateLimit from "express-rate-limit";
 
-const pingRateLimiter = rateLimit({
+export const pingRateLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 1000,
   standardHeaders: true,
@@ -13,7 +13,7 @@ const pingRateLimiter = rateLimit({
   },
 });
 
-const loginRateLimiter = rateLimit({
+export const loginRateLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 24,
   standardHeaders: true,
@@ -26,7 +26,7 @@ const loginRateLimiter = rateLimit({
   },
 });
 
-const signupRateLimiter = rateLimit({
+export const signupRateLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 5,
   standardHeaders: true,
@@ -39,7 +39,7 @@ const signupRateLimiter = rateLimit({
   },
 });
 
-const uploadRateLimiter = rateLimit({
+export const uploadRateLimiter = rateLimit({
   windowMs: 30 * 1000,
   limit: 5,
   standardHeaders: true,
@@ -52,7 +52,7 @@ const uploadRateLimiter = rateLimit({
   },
 });
 
-const wildcardRateLimiter = rateLimit({
+export const wildcardRateLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 1,
   standardHeaders: true,
@@ -65,10 +65,3 @@ const wildcardRateLimiter = rateLimit({
   },
 });
 
-module.exports = {
-  pingRateLimiter,
-  loginRateLimiter,
-  signupRateLimiter,
-  uploadRateLimiter,
-  wildcardRateLimiter,
-};

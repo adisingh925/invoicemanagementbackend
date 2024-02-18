@@ -1,4 +1,4 @@
-var toobusy = require("toobusy-js");
+import toobusy from "toobusy-js";
 
 const checkBusy = (_req, res, next) => {
   try {
@@ -14,4 +14,4 @@ const checkBusy = (_req, res, next) => {
   }
 };
 
-module.exports = checkBusy;
+export default checkBusy;

@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const { createUserTable } = require("../database/db");
+import { Router } from "express";
+const router = Router();
+import { createUserTable } from "../database/db.js";
 
 router.get("/createUserTable", async (_req, res) => {
   try {
@@ -13,4 +13,4 @@ router.get("/createUserTable", async (_req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

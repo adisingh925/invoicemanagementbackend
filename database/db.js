@@ -1,6 +1,8 @@
-var mysql = require("mysql2");
+import { createPool } from "mysql2";
+import dotenv from 'dotenv';
+dotenv.config();
 
-var connection = mysql.createPool({
+var connection = createPool({
   connectionLimit: 5,
   host: process.env.DB_HOSTNAME,
   user: process.env.LOCALDB_USERNAME,
@@ -17,7 +19,7 @@ connection.getConnection((err, connection) => {
   connection.release();
 });
 
-const getUser = async (username) => {
+export const getUser = async (username) => {
   return new Promise((resolve, reject) => {
     var query = `SELECT * FROM ?? where username = ?`;
 
@@ -40,7 +42,7 @@ const getUser = async (username) => {
   });
 };
 
-const createUserTable = () => {
+export const createUserTable = () => {
   return new Promise((resolve, reject) => {
     var query = `CREATE TABLE ?? (
         id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -62,7 +64,7 @@ const createUserTable = () => {
   });
 };
 
-const createUser = async (username, password, bucketName) => {
+export const createUser = async (username, password) => {
   return new Promise((resolve, reject) => {
     var query = `INSERT INTO ?? (username, password) VALUES (?, ?)`;
 
@@ -82,8 +84,3 @@ const createUser = async (username, password, bucketName) => {
   });
 };
 
-module.exports = {
-  getUser,
-  createUser,
-  createUserTable,
-};

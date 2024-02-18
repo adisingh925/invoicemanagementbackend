@@ -1,10 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
-const { validationResult, body } = require("express-validator");
-const { getUser } = require("../database/db");
-const { loginRateLimiter } = require("../ratelimiters/rateLimiters");
+import { Router } from "express";
+const router = Router();
+import bcrypt from "bcryptjs";
+const { compare } = bcrypt;
+import jwt from "jsonwebtoken";
+const { sign } = jwt;
+import { validationResult, body } from "express-validator";
+import { getUser } from "../database/db.js";
+import { loginRateLimiter } from "../ratelimiters/rateLimiters.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * @post /login
@@ -34,7 +38,7 @@ router.post(
         return res.status(400).json({ msg: "User Not Exists!", code: -1 });
       }
 
-      const passwordCompare = await bcrypt.compare(password, user.password);
+      const passwordCompare = await compare(password, user.password);
 
       if (!passwordCompare) {
         return res.status(400).json({ msg: "Invalid Credentials!", code: -1 });
@@ -44,7 +48,9 @@ router.post(
         email: req.body.email,
       };
 
-      const authtoken = jwt.sign(tokenPayload, process.env.JWT_SECRET);
+      const authtoken = sign(tokenPayload, process.env.JWT_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRE_TIME,
+      });
 
       return res.status(200).json({
         msg: "login successful!",
@@ -57,4 +63,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

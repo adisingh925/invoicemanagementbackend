@@ -1,10 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
-const { validationResult, body } = require("express-validator");
-const { getUser, createUser } = require("../database/db");
-const { signupRateLimiter } = require("../ratelimiters/rateLimiters");
+import { Router } from "express";
+const router = Router();
+import pkg from "bcryptjs";
+const { genSalt, hash } = pkg;
+import jwt from "jsonwebtoken";
+const { sign } = jwt;
+import { validationResult, body } from "express-validator";
+import { getUser, createUser } from "../database/db.js";
+import { signupRateLimiter } from "../ratelimiters/rateLimiters.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 router.post(
   "/signup",
@@ -31,8 +35,8 @@ router.post(
         });
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const securePassword = await bcrypt.hash(req.body.password, salt);
+      const salt = await genSalt(10);
+      const securePassword = await hash(req.body.password, salt);
 
       await createUser(req.body.email, securePassword);
 
@@ -40,7 +44,9 @@ router.post(
         email: req.body.email,
       };
 
-      const authtoken = jwt.sign(tokenPayload, process.env.JWT_SECRET);
+      const authtoken = sign(tokenPayload, process.env.JWT_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRE_TIME,
+      });
 
       return res.status(201).json({
         msg: `Hello ${req.body.email}, Your account is created successfully!`,
@@ -53,4 +59,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

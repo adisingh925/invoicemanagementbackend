@@ -1,5 +1,5 @@
-const express = require("express");
-const { wildcardRateLimiter } = require("../ratelimiters/rateLimiters");
+import express from "express";
+import { wildcardRateLimiter } from "../ratelimiters/rateLimiters.js";
 const router = express.Router();
 
 /**
@@ -9,4 +9,4 @@ router.all("*", wildcardRateLimiter, (_req, res) => {
   return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
 });
 
-module.exports = router;
+export default router;

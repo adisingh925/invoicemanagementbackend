@@ -1,20 +1,27 @@
 "strict mode";
 
 // Importing required modules
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const fs = require("fs");
-const http = require("http");
-const https = require("https");
-const checkBusy = require("./middleware/toobusy");
-require("dotenv").config();
+import { readFileSync } from "fs";
+import { createServer } from "http";
+import { createServer as _createServer } from "https";
+import checkBusy from "./middleware/toobusy.js";
+import dotenv from 'dotenv';
+dotenv.config();
+import ping from "./routes/ping.js";
+import login from "./routes/login.js";
+import signup from "./routes/signup.js";
+import createTable from "./routes/createTable.js";
+import upload from "./routes/upload.js";
+import wildCard from "./routes/wildCard.js";
 
-const httpServer = http.createServer(app);
+const httpServer = createServer(app);
 
-const httpsServer = https.createServer(
+const httpsServer = _createServer(
   {
-    key: fs.readFileSync("ssl/key.key"),
-    cert: fs.readFileSync("ssl/certificate_chain.cer"),
+    key: readFileSync("ssl/key.key"),
+    cert: readFileSync("ssl/certificate_chain.cer"),
     requestCert: true,
     rejectUnauthorized: false,
   },
@@ -22,15 +29,15 @@ const httpsServer = https.createServer(
 );
 
 app.use(checkBusy);
-app.use(express.json({ limit: "1mb" }));
+app.use(json({ limit: "1mb" }));
 
 //All routes
-app.use("/", require("./routes/ping"));
-app.use("/", require("./routes/login"));
-app.use("/", require("./routes/signup"));
-app.use("/", require("./routes/createTable"));
-app.use("/", require("./routes/upload"));
-app.use("/", require("./routes/wildCard"));
+app.use("/", ping);
+app.use("/", login);
+app.use("/", signup);
+app.use("/", createTable);
+app.use("/", upload);
+app.use("/", wildCard);
 
 /**
  * Global error handler

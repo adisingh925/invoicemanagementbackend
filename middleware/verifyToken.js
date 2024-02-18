@@ -1,4 +1,7 @@
-var jwt = require("jsonwebtoken");
+import pkg from 'jsonwebtoken';
+const { verify: _verify } = pkg;
+import dotenv from 'dotenv';
+dotenv.config();
 
 const verifytoken = (req, res, next) => {
   try {
@@ -9,7 +12,7 @@ const verifytoken = (req, res, next) => {
         .json({ error: "Please authenticate using a valid token", code: -1 });
     }
     
-    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const verify = _verify(token, process.env.JWT_SECRET);
     req.email = verify.email;
     next();
   } catch (error) {
@@ -19,4 +22,4 @@ const verifytoken = (req, res, next) => {
   }
 };
 
-module.exports = verifytoken;
+export default verifytoken;

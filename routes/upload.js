@@ -1,9 +1,14 @@
-const express = require("express");
-const verifytoken = require("../middleware/verifyToken");
-const router = express.Router();
-const multer = require("multer");
-const { uploadRateLimiter } = require("../ratelimiters/rateLimiters");
-const storage = multer.memoryStorage();
+import { Router } from "express";
+import verifytoken from "../middleware/verifyToken.js";
+const router = Router();
+import multer, { memoryStorage } from "multer";
+import { uploadRateLimiter } from "../ratelimiters/rateLimiters.js";
+const storage = memoryStorage();
+import dotenv from 'dotenv';
+dotenv.config();
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+
+const client = new S3Client({});
 
 const fileFilter = (_req, file, cb) => {
   if (file.mimetype !== "application/pdf") {
@@ -37,17 +42,18 @@ router.post(
         return res.status(400).json({ msg: "File is empty!", code: -1 });
       }
 
-      const params = {
+      const command = new PutObjectCommand({
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Key: req.email + "/" + Date.now(),
         Body: file.buffer,
         ContentType: file.mimetype,
-      };
+      });
 
       try {
-        await s3.upload(params).promise();
+        await client.send(command);
         res.status(200).json({ msg: "File Successfully Uploaded!", code: 1 });
-      } catch (error) {
+        console.log(response);
+      } catch (err) {
         console.error(error.message);
         res.status(500).json({ msg: "Error Uploading File!", code: -1 });
       }
@@ -58,4 +64,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;
