@@ -4,11 +4,11 @@ const router = Router();
 import multer, { memoryStorage } from "multer";
 import { uploadRateLimiter } from "../ratelimiters/rateLimiters.js";
 const storage = memoryStorage();
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-const client = new S3Client({});
+const client = new S3Client({ region: process.env.AWS_S3_REGION });
 
 const fileFilter = (_req, file, cb) => {
   if (file.mimetype !== "application/pdf") {
