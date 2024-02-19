@@ -54,7 +54,7 @@ router.post(
         res.status(200).json({ msg: "File Successfully Uploaded!", code: 1 });
         console.log(response);
       } catch (err) {
-        console.error(error.message);
+        console.error(err.message);
         res.status(500).json({ msg: "Error Uploading File!", code: -1 });
       }
     } catch (error) {
