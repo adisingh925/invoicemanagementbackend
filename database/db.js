@@ -42,28 +42,6 @@ export const getUser = async (username) => {
   });
 };
 
-export const createUserTable = () => {
-  return new Promise((resolve, reject) => {
-    var query = `CREATE TABLE ?? (
-        id INT AUTO_INCREMENT PRIMARY KEY, 
-        username VARCHAR(255) UNIQUE NOT NULL, 
-        password VARCHAR(255) NOT NULL, 
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )`;
-
-    connection.query(query, [process.env.USER_TABLE_NAME], function (err) {
-      if (err) {
-        console.log(err.message);
-        reject(err);
-      } else {
-        console.log("Table created successfully!");
-        resolve(1);
-      }
-    });
-  });
-};
-
 export const createUser = async (username, password) => {
   return new Promise((resolve, reject) => {
     var query = `INSERT INTO ?? (username, password) VALUES (?, ?)`;

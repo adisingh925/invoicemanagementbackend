@@ -56,8 +56,8 @@ router.post(
         console.error(err.message);
         res.status(500).json({ msg: "Error Uploading File!", code: -1 });
       }
-    } catch (error) {
-      console.error(error.message);
+    } catch (err) {
+      console.error(err.message);
       res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }

@@ -35,7 +35,6 @@ app.use(json({ limit: "1mb" }));
 app.use("/", ping);
 app.use("/", login);
 app.use("/", signup);
-app.use("/", createTable);
 app.use("/", upload);
 app.use("/", wildCard);
 
