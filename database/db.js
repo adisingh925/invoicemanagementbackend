@@ -19,13 +19,13 @@ connection.getConnection((err, connection) => {
   connection.release();
 });
 
-export const getUser = async (username) => {
+export const getUser = async (email) => {
   return new Promise((resolve, reject) => {
-    var query = `SELECT * FROM ?? where username = ?`;
+    var query = `SELECT * FROM ?? where email = ?`;
 
     connection.query(
       query,
-      [process.env.USER_TABLE_NAME, username],
+      [process.env.USER_TABLE_NAME, email],
       function (err, result) {
         if (err) {
           console.log(err.message);
@@ -42,13 +42,13 @@ export const getUser = async (username) => {
   });
 };
 
-export const createUser = async (username, password) => {
+export const createUser = async (email, password) => {
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO ?? (username, password) VALUES (?, ?)`;
+    var query = `INSERT INTO ?? (email, password) VALUES (?, ?)`;
 
     connection.query(
       query,
-      [process.env.USER_TABLE_NAME, username, password],
+      [process.env.USER_TABLE_NAME, email, password],
       function (err) {
         if (err) {
           console.log(err.message);
