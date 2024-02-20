@@ -12,7 +12,6 @@ dotenv.config();
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
-import createTable from "./routes/createTable.js";
 import upload from "./routes/upload.js";
 import wildCard from "./routes/wildCard.js";
 
