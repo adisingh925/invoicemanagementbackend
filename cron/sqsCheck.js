@@ -4,6 +4,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 cron.schedule("* * * * *", () => {
-  fetchSingleMessage(process.env.SQS_URL);
+  fetchSingleMessage();
   console.log("running a task every minute");
 });

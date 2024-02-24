@@ -1,29 +1,44 @@
-import { SQSClient, ReceiveMessageCommand } from "@aws-sdk/client-sqs";
+import {
+  ReceiveMessageCommand,
+  DeleteMessageCommand,
+  SQSClient,
+} from "@aws-sdk/client-sqs";
+import dotenv from "dotenv";
+dotenv.config();
 
-const sqs = new SQSClient();
+const client = new SQSClient({ region: process.env.AWS_REGION });
 
-export const fetchSingleMessage = async (queueUrl) => {
-  try {
-    const params = {
+const receiveMessage = (queueUrl) =>
+  client.send(
+    new ReceiveMessageCommand({
       QueueUrl: queueUrl,
       MaxNumberOfMessages: 1,
-      VisibilityTimeout: 10,
-      WaitTimeSeconds: 0,
-    };
+      WaitTimeSeconds: 20,
+      VisibilityTimeout: 20,
+    })
+  );
 
-    const { Messages } = await sqs.receiveMessage(
-      new ReceiveMessageCommand(params)
+export const fetchSingleMessage = async () => {
+  try {
+    const { Messages } = await receiveMessage(process.env.SQS_URL);
+
+    if (!Messages || Messages.length === 0) {
+      console.log("No messages available in the queue.");
+      return;
+    }
+
+    const message = Messages[0];
+    console.log("Message Body:", message.Body);
+
+    await client.send(
+      new DeleteMessageCommand({
+        QueueUrl: queueUrl,
+        ReceiptHandle: message.ReceiptHandle,
+      })
     );
 
-    if (Messages && Messages.length > 0) {
-      const message = Messages[0];
-      console.log("Received message:", message.Body);
-      return message;
-    } else {
-      console.log("No messages available in the queue.");
-      return null;
-    }
+    console.log("Message deleted successfully.");
   } catch (error) {
-    console.error("Error fetching message:", error);
+    console.error(error.message);
   }
 };
