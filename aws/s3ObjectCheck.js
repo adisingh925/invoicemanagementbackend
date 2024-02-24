@@ -6,11 +6,11 @@ import {
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
-export const fetchAndCheckObjectMetadata = async (clientFileTypes) => {
+export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: message.key,
+      Key: key,
     };
 
     const data = await s3Client.send(new HeadObjectCommand(params));
