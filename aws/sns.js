@@ -32,7 +32,7 @@ export const fetchSingleMessage = async () => {
 
     await client.send(
       new DeleteMessageCommand({
-        QueueUrl: queueUrl,
+        QueueUrl: process.env.SQS_URL,
         ReceiptHandle: message.ReceiptHandle,
       })
     );
