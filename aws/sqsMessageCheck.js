@@ -29,8 +29,9 @@ export const fetchSingleMessage = async () => {
       return;
     }
 
-    const message = JSON.parse(Messages[0].Body);
-    const clientId = message.key.split("/").slice(0, -1).join("/");
+    const message = Messages[0];
+    const parsedMessage = JSON.parse(message.Body);
+    const clientId = parsedMessage.key.split("/").slice(0, -1).join("/");
 
     let clientFileTypes = await getFileTypesForUser(clientId);
 
@@ -38,7 +39,7 @@ export const fetchSingleMessage = async () => {
       console.log("sqsMessageCheck() => File types not found for the client!");
     } else {
       console.log("sqsMessageCheck() => File types found for the client!");
-      await fetchAndCheckObjectMetadata(clientFileTypes, message.key);
+      await fetchAndCheckObjectMetadata(clientFileTypes, parsedMessage.key);
     }
 
     await client.send(
