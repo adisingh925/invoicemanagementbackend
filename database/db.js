@@ -25,7 +25,7 @@ export const getUser = async (email) => {
 
     connection.query(
       query,
-      [process.env.USER_TABLE_NAME, email],
+      [process.env.CLIENT_TABLE_NAME, email],
       function (err, result) {
         if (err) {
           console.log(err.message);
@@ -48,7 +48,7 @@ export const createUser = async (email, password) => {
 
     connection.query(
       query,
-      [process.env.USER_TABLE_NAME, email, password],
+      [process.env.CLIENT_TABLE_NAME, email, password],
       function (err) {
         if (err) {
           console.log(err.message);
