@@ -15,8 +15,8 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
 
     const data = await s3Client.send(new HeadObjectCommand(params));
 
-    console.log("fetchAndCheckObjectMetadata() => File metadata : ", data);
-    
+    console.log("fetchAndCheckObjectMetadata() => File ContentType : ", data.ContentType);
+
     if (clientFileTypes.includes(data.ContentType)) {
       console.log("fetchAndCheckObjectMetadata() => File type is allowed!");
     } else {
