@@ -25,7 +25,7 @@ export const fetchSingleMessage = async () => {
     const { Messages } = await receiveMessage(process.env.SQS_URL);
 
     if (!Messages || Messages.length === 0) {
-      console.log("No messages available in the queue.");
+      console.log("sqsMessageCheck() => No messages available in the queue.");
       return;
     }
 
@@ -35,9 +35,9 @@ export const fetchSingleMessage = async () => {
     let clientFileTypes = await getFileTypesForUser(clientId);
 
     if (clientFileTypes === -1) {
-      console.log("File types not found for the client!");
+      console.log("sqsMessageCheck() => File types not found for the client!");
     } else {
-      console.log("File types found for the client!");
+      console.log("sqsMessageCheck() => File types found for the client!");
       await fetchAndCheckObjectMetadata(clientFileTypes, message.key);
     }
 
@@ -48,8 +48,8 @@ export const fetchSingleMessage = async () => {
       })
     );
 
-    console.log("Message deleted successfully.");
+    console.log("sqsMessageCheck() => Message deleted successfully.");
   } catch (error) {
-    console.error(error.message);
+    console.error("sqsMessageCheck() => " + error.message);
   }
 };
