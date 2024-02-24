@@ -1,6 +1,8 @@
 import { createPool } from "mysql2";
 import dotenv from "dotenv";
 dotenv.config();
+import NodeCache from "node-cache";
+const myCache = new NodeCache();
 
 var connection = createPool({
   connectionLimit: 5,
@@ -62,25 +64,32 @@ export const createUser = async (email, password) => {
   });
 };
 
-export const getFileTypesForUser = async (email) => {
+export const getFileTypesForUser = async (clientId) => {
   return new Promise((resolve, reject) => {
-    var query = `SELECT fileTypes FROM ?? where fk_client_id = (SELECT client_id FROM ?? WHERE email = ?) and is_client = 1`;
+    let cachedFileTypes = myCache.get(clientId);
 
-    connection.query(
-      query,
-      [process.env.CUSTOMER_TABLE_NAME, process.env.CLIENT_TABLE_NAME, email],
-      function (err, result) {
-        if (err) {
-          console.log(err.message);
-          reject(err);
-        } else {
-          if (result.length > 0) {
-            resolve(result[0]);
+    if (cachedFileTypes) {
+      resolve(cachedFileTypes.fileTypes);
+    } else {
+      var query = `SELECT fileTypes FROM ?? WHERE fk_client_id = ?`;
+
+      connection.query(
+        query,
+        [process.env.CUSTOMER_TABLE_NAME, clientId],
+        function (err, result) {
+          if (err) {
+            console.log(err.message);
+            reject(err);
+          } else {
+            if (result.length > 0) {
+              myCache.set(clientId, result, 60);
+              resolve(result);
+            }
+
+            resolve(-1);
           }
-
-          resolve(-1);
         }
-      }
-    );
+      );
+    }
   });
 };

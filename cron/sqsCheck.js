@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { fetchSingleMessage } from "../aws/sns.js";
+import { fetchSingleMessage } from "../aws/sqsMessageCheck.js";
 import dotenv from "dotenv";
 dotenv.config();
 

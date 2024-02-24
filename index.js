@@ -7,14 +7,13 @@ import { readFileSync } from "fs";
 import { createServer } from "http";
 import { createServer as _createServer } from "https";
 import checkBusy from "./middleware/toobusy.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
 import wildCard from "./routes/wildCard.js";
-import fileTypes from "./routes/fileTypes.js";
-import "./cron/sqsCheck.js"
+import "./cron/sqsCheck.js";
 
 const httpServer = createServer(app);
 
@@ -35,7 +34,6 @@ app.use(json({ limit: "1mb" }));
 app.use("/", ping);
 app.use("/", login);
 app.use("/", signup);
-app.use("/", fileTypes);
 app.use("/", wildCard);
 
 /**

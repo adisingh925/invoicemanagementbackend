@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-sqs";
 import dotenv from "dotenv";
 import { fetchAndCheckObjectMetadata } from "./s3ObjectCheck.js";
+import { getFileTypesForUser } from "../database/db.js";
 dotenv.config();
 
 const client = new SQSClient({ region: process.env.AWS_REGION });
@@ -28,9 +29,16 @@ export const fetchSingleMessage = async () => {
       return;
     }
 
-    const message = Messages[0];
+    const message = JSON.parse(Messages[0].Body);
+    const clientId = message.key.split("/").slice(0, -1).join("/");
 
-    await fetchAndCheckObjectMetadata(JSON.parse(message.Body));
+    let clientFileTypes = await getFileTypesForUser(clientId);
+
+    if (clientFileTypes === -1) {
+      console.log("File types not found for the client!");
+    } else {
+      await fetchAndCheckObjectMetadata(clientFileTypes);
+    }
 
     await client.send(
       new DeleteMessageCommand({
