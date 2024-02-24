@@ -17,9 +17,7 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
 
     const trimmedStr = data.ContentType.replace(/\s+$/, '');
 
-    console.log("fetchAndCheckObjectMetadata() => File ContentType : " + trimmedStr);
-
-    if (clientFileTypes.includes(trimmedStr)) {
+    if (String(clientFileTypes).includes(data.ContentType)) {
       console.log("fetchAndCheckObjectMetadata() => File type is allowed!");
     } else {
       console.log("fetchAndCheckObjectMetadata() => File type is not allowed!");
