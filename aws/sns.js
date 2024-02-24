@@ -4,6 +4,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 import dotenv from "dotenv";
+import { fetchAndCheckObjectMetadata } from "./s3ObjectCheck.js";
 dotenv.config();
 
 const client = new SQSClient({ region: process.env.AWS_REGION });
@@ -13,7 +14,7 @@ const receiveMessage = (queueUrl) =>
     new ReceiveMessageCommand({
       QueueUrl: queueUrl,
       MaxNumberOfMessages: 1,
-      WaitTimeSeconds: 20,
+      WaitTimeSeconds: 0,
       VisibilityTimeout: 20,
     })
   );
@@ -28,7 +29,8 @@ export const fetchSingleMessage = async () => {
     }
 
     const message = Messages[0];
-    console.log("Message Body:", message.Body);
+
+    await fetchAndCheckObjectMetadata(JSON.parse(message.Body));
 
     await client.send(
       new DeleteMessageCommand({

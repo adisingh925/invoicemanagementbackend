@@ -5,5 +5,4 @@ dotenv.config();
 
 cron.schedule("* * * * *", () => {
   fetchSingleMessage();
-  console.log("running a task every minute");
 });
