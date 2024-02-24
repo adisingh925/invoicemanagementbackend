@@ -12,9 +12,9 @@ dotenv.config();
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
-import upload from "./routes/upload.js";
 import wildCard from "./routes/wildCard.js";
-import extension from "./routes/extension.js";
+import fileTypes from "./routes/fileTypes.js";
+import "./cron/sqsCheck.js"
 
 const httpServer = createServer(app);
 
@@ -35,8 +35,7 @@ app.use(json({ limit: "1mb" }));
 app.use("/", ping);
 app.use("/", login);
 app.use("/", signup);
-app.use("/", upload);
-app.use("/", extension);
+app.use("/", fileTypes);
 app.use("/", wildCard);
 
 /**

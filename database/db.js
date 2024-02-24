@@ -62,9 +62,9 @@ export const createUser = async (email, password) => {
   });
 };
 
-export const getExtensionForUser = async (email) => {
+export const getFileTypesForUser = async (email) => {
   return new Promise((resolve, reject) => {
-    var query = `SELECT extension FROM ?? where fk_client_id = (SELECT client_id FROM ?? WHERE email = ?) and is_client = 1`;
+    var query = `SELECT fileTypes FROM ?? where fk_client_id = (SELECT client_id FROM ?? WHERE email = ?) and is_client = 1`;
 
     connection.query(
       query,
