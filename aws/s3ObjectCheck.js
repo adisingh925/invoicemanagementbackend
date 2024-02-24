@@ -15,22 +15,32 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
 
     const data = await s3Client.send(new HeadObjectCommand(params));
 
+    console.log("fetchAndCheckObjectMetadata() => File metadata : ", data);
+    
     if (clientFileTypes.includes(data.ContentType)) {
       console.log("fetchAndCheckObjectMetadata() => File type is allowed!");
     } else {
       console.log("fetchAndCheckObjectMetadata() => File type is not allowed!");
       await s3Client.send(new DeleteObjectCommand(params));
-      console.log("fetchAndCheckObjectMetadata() => File deleted successfully!");
+      console.log(
+        "fetchAndCheckObjectMetadata() => File deleted successfully!"
+      );
       return -1;
     }
 
     if (data.ContentLength > 1000000) {
-      console.log("fetchAndCheckObjectMetadata() => File size is greater than 1MB!");
+      console.log(
+        "fetchAndCheckObjectMetadata() => File size is greater than 1MB!"
+      );
       await s3Client.send(new DeleteObjectCommand(params));
-      console.log("fetchAndCheckObjectMetadata() => File deleted successfully!");
+      console.log(
+        "fetchAndCheckObjectMetadata() => File deleted successfully!"
+      );
       return -1;
     } else {
-      console.log("fetchAndCheckObjectMetadata() => File size is less than 1MB!");
+      console.log(
+        "fetchAndCheckObjectMetadata() => File size is less than 1MB!"
+      );
     }
   } catch (error) {
     console.error("fetchAndCheckObjectMetadata() => " + error.message);
