@@ -15,6 +15,11 @@ import signup from "./routes/signup.js";
 import wildCard from "./routes/wildCard.js";
 import "./cron/sqsCheck.js";
 
+if("test123".includes("test")) {
+  console.log("test");
+
+}
+
 const httpServer = createServer(app);
 
 const httpsServer = _createServer(
