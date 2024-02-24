@@ -35,6 +35,11 @@ export const fetchSingleMessage = async () => {
 
     let clientFileTypes = await getFileTypesForUser(clientId);
 
+    console.log(
+      "sqsMessageCheck() => File types for the client : ",
+      clientFileTypes
+    );
+
     if (clientFileTypes === -1) {
       console.log("sqsMessageCheck() => File types not found for the client!");
     } else {
