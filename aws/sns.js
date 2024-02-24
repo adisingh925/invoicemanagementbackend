@@ -6,6 +6,7 @@ import {
 import dotenv from "dotenv";
 dotenv.config();
 
+
 const client = new SQSClient({ region: process.env.AWS_REGION });
 
 const receiveMessage = (queueUrl) =>
