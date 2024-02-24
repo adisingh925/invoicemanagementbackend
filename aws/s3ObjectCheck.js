@@ -5,7 +5,7 @@ const s3Client = new S3Client({ region: process.env.AWS_REGION });
 export const fetchAndCheckObjectMetadata = async (message) => {
   try {
     const params = {
-      Bucket: message.bucketName,
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: message.key,
     };
 
