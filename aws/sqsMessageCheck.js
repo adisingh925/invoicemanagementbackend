@@ -37,6 +37,7 @@ export const fetchSingleMessage = async () => {
     if (clientFileTypes === -1) {
       console.log("File types not found for the client!");
     } else {
+      console.log("File types found for the client!");
       await fetchAndCheckObjectMetadata(clientFileTypes);
     }
 
