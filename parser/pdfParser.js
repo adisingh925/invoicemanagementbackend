@@ -10,7 +10,6 @@ export const parsePdf = async (path) => {
         console.warn("parsePdf() => end of file!");
         reject("end of file!");
       } else if (item.text) {
-        console.log("parsePdf() => " + item.text);
         resolve(item.text);
       }
     });
