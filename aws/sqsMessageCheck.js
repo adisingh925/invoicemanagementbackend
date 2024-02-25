@@ -72,8 +72,12 @@ export const fetchSingleMessage = async () => {
           let customers = await getCustomerForFileTypes(response);
 
           if (customers != -1) {
-            let parsedData = parsePdf(filePath);
-            console.log("sqsMessageCheck() => Parsed data: " + parsedData);
+            try {
+              let parsedData = await parsePdf(filePath);
+              console.log("sqsMessageCheck() => Parsed data: " + parsedData);
+            } catch (error) {
+              console.error("sqsMessageCheck() => " + error.message);
+            }
           }
         } catch (error) {
           console.error("sqsMessageCheck() => " + error.message);
