@@ -5,10 +5,14 @@ import {
 } from "@aws-sdk/client-sqs";
 import dotenv from "dotenv";
 import { fetchAndCheckObjectMetadata } from "./s3ObjectCheck.js";
-import { getFileTypesForUser } from "../database/db.js";
+import {
+  getCustomerForFileTypes,
+  getFileTypesForUser,
+} from "../database/db.js";
 import { downloadObject } from "../filesystem/downloadS3Object.js";
 dotenv.config();
 import fs from "fs";
+import { parsePdf } from "../parser/pdfParser.js";
 
 const client = new SQSClient({ region: process.env.AWS_REGION });
 
@@ -65,6 +69,12 @@ export const fetchSingleMessage = async () => {
         let filePath = "downloads/" + new Date().getTime();
         try {
           await downloadObject(params, filePath);
+          let customers = await getCustomerForFileTypes(response);
+
+          if (customers != -1) {
+            let parsedData = parsePdf(filePath);
+            console.log("sqsMessageCheck() => Parsed data: " + parsedData);
+          }
         } catch (error) {
           console.error("sqsMessageCheck() => " + error.message);
           deleteLocalFile(filePath);

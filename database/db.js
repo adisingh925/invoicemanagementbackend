@@ -93,3 +93,26 @@ export const getFileTypesForUser = async (clientId) => {
     }
   });
 };
+
+export const getCustomerForFileTypes = async (fileType) => {
+  return new Promise((resolve, reject) => {
+    var query = `SELECT fk_client_id, parsing_data FROM ?? WHERE fileTypes = ?`;
+
+    connection.query(
+      query,
+      [process.env.CUSTOMER_TABLE_NAME, fileType],
+      function (err, result) {
+        if (err) {
+          console.log(err.message);
+          reject(err);
+        } else {
+          if (result.length > 0) {
+            resolve(result);
+          }
+
+          resolve(-1);
+        }
+      }
+    );
+  });
+};
