@@ -52,7 +52,6 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
     } else {
       console.log("fetchAndCheckObjectMetadata() => All checks did not pass!");
       await deleteS3Object(params);
-      console.log("fetchAndCheckObjectMetadata() => File deleted!");
       return -1;
     }
   } catch (error) {
