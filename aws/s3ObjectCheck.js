@@ -7,10 +7,19 @@ import { downloadObject } from "../filesystem/downloadS3Object.js";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
+const deleteLocalFile = (filePath) => {
+  try {
+    fs.unlinkSync(filePath);
+    console.log("deleteLocalFile() => Local File deleted successfully!");
+  } catch (error) {
+    console.error("deleteLocalFile() => " + error.message);
+  }
+};
+
 const deleteS3Object = async (params) => {
   try {
     await s3Client.send(new DeleteObjectCommand(params));
-    console.log("deleteS3Object() => File deleted successfully!");
+    console.log("deleteS3Object() => S3 File deleted successfully!");
   } catch (error) {
     console.error("deleteS3Object() => " + error.message);
   }
@@ -49,8 +58,14 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
     }
 
     if (passedChecks === 2) {
+      let filePath = "downloadedfiles/" + new Date().getTime();
       console.log("fetchAndCheckObjectMetadata() => All checks passed!");
-      downloadObject(params, "downloadedfiles/" + new Date());
+      let downloadStatus = downloadObject(params, filePath);
+      if (downloadStatus === -1) {
+        console.log("fetchAndCheckObjectMetadata() => Download failed!");
+        deleteLocalFile(filePath);
+        return -1;
+      }
     } else {
       console.log("fetchAndCheckObjectMetadata() => All checks did not pass!");
       await deleteS3Object(params);
