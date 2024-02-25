@@ -50,7 +50,7 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
 
     if (passedChecks === 2) {
       console.log("fetchAndCheckObjectMetadata() => All checks passed!");
-      downloadObject(params, "downloadedfiles");
+      downloadObject(params, "downloadedfiles/" + new Date());
     } else {
       console.log("fetchAndCheckObjectMetadata() => All checks did not pass!");
       await deleteS3Object(params);
