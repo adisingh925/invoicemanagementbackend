@@ -6,7 +6,9 @@ import {
 import dotenv from "dotenv";
 import { fetchAndCheckObjectMetadata } from "./s3ObjectCheck.js";
 import { getFileTypesForUser } from "../database/db.js";
+import { downloadObject } from "../filesystem/downloadS3Object.js";
 dotenv.config();
+import fs from "fs";
 
 const client = new SQSClient({ region: process.env.AWS_REGION });
 
@@ -19,6 +21,15 @@ const receiveMessage = (queueUrl) =>
       VisibilityTimeout: 20,
     })
   );
+
+const deleteLocalFile = (filePath) => {
+  try {
+    fs.unlinkSync(filePath);
+    console.log("deleteLocalFile() => Local File deleted successfully!");
+  } catch (error) {
+    console.error("deleteLocalFile() => " + error.message);
+  }
+};
 
 export const fetchSingleMessage = async () => {
   try {
@@ -39,14 +50,25 @@ export const fetchSingleMessage = async () => {
       console.log("sqsMessageCheck() => File types not found for the client!");
     } else {
       console.log("sqsMessageCheck() => File types found for the client!");
-      let response = await fetchAndCheckObjectMetadata(
-        clientFileTypes,
-        parsedMessage.key
-      );
+
+      const params = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: key,
+      };
+
+      let response = await fetchAndCheckObjectMetadata(clientFileTypes, params);
+
       if (response === -1) {
         console.log("sqsMessageCheck() => File metadata checks failed!");
       } else {
-        console.log("sqsMessageCheck() => File metadata checks success!");
+        console.log("sqsMessageCheck() => File metadata checks passed!");
+        let filePath = "downloads/" + new Date().getTime();
+        try {
+          await downloadObject(params, filePath);
+        } catch (error) {
+          console.error("sqsMessageCheck() => " + error.message);
+          deleteLocalFile(filePath);
+        }
       }
     }
 
