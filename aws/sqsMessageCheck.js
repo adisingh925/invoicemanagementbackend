@@ -39,7 +39,15 @@ export const fetchSingleMessage = async () => {
       console.log("sqsMessageCheck() => File types not found for the client!");
     } else {
       console.log("sqsMessageCheck() => File types found for the client!");
-      await fetchAndCheckObjectMetadata(clientFileTypes, parsedMessage.key);
+      let response = await fetchAndCheckObjectMetadata(
+        clientFileTypes,
+        parsedMessage.key
+      );
+      if (response === -1) {
+        console.log("sqsMessageCheck() => File metadata checks failed!");
+      } else {
+        console.log("sqsMessageCheck() => File metadata checks success!");
+      }
     }
 
     await client.send(

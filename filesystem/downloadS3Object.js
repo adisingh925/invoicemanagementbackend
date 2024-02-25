@@ -4,30 +4,39 @@ import path from "path";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
-export const downloadObject = async (params, filePath) => {
-  try {
-    console.log("downloadObject() => Downloading object from S3 bucket...");
+export const downloadObject = (params, filePath) => {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("downloadObject() => Downloading object from S3 bucket...");
 
-    const directory = path.dirname(filePath);
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory, { recursive: true });
+      const directory = path.dirname(filePath);
+      if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory, { recursive: true });
+      }
+
+      const fileStream = fs.createWriteStream(filePath);
+      const getObjectCommand = new GetObjectCommand(params);
+
+      const response = s3Client.send(getObjectCommand);
+      response
+        .then((data) => {
+          data.Body.pipe(fileStream);
+          fileStream.on("finish", () => {
+            console.log("downloadObject() => Object downloaded successfully.");
+            resolve(1);
+          });
+          fileStream.on("error", (error) => {
+            console.error("downloadObject() => " + error.message);
+            reject(-1);
+          });
+        })
+        .catch((error) => {
+          console.error("downloadObject() => " + error.message);
+          reject(-1);
+        });
+    } catch (error) {
+      console.error("downloadObject() => " + error.message);
+      reject(-1);
     }
-
-    const { Body } = await s3Client.send(new GetObjectCommand(params));
-
-    const fileStream = fs.createWriteStream(filePath);
-    Body.pipe(fileStream);
-
-    await new Promise((resolve, reject) => {
-      fileStream.on("finish", resolve);
-      fileStream.on("error", reject);
-    });
-
-    console.log("downloadObject => Object downloaded successfully.");
-  } catch (error) {
-    console.error("downloadObject => ", error);
-    return -1;
-  }
-
-  return 1;
+  });
 };

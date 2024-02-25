@@ -60,8 +60,10 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
     if (passedChecks === 2) {
       let filePath = "downloadedfiles/" + new Date().getTime();
       console.log("fetchAndCheckObjectMetadata() => All checks passed!");
-      let downloadStatus = downloadObject(params, filePath);
-      if (downloadStatus === -1) {
+      try {
+        await downloadObject(params, filePath);
+        return filePath;
+      } catch (error) {
         console.log("fetchAndCheckObjectMetadata() => Download failed!");
         deleteLocalFile(filePath);
         return -1;
