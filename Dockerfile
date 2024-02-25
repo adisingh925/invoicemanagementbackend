@@ -10,7 +10,6 @@ COPY /ratelimiters /backend/ratelimiters
 COPY /ssl /backend/ssl
 COPY /cron /backend/cron
 COPY /aws /backend/aws
-COPY /downloadedfiles /backend/downloadedfiles
 COPY /parser /backend/parser
 COPY filesystem /backend/filesystem
 COPY .env.vault .
