@@ -57,7 +57,7 @@ export const fetchSingleMessage = async () => {
 
       const params = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: key,
+        Key: parsedMessage.key,
       };
 
       let response = await fetchAndCheckObjectMetadata(clientFileTypes, params);
