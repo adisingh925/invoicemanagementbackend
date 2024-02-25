@@ -3,6 +3,7 @@ import {
   HeadObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import { downloadObject } from "../filesystem/downloadS3Object.js";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
@@ -49,6 +50,7 @@ export const fetchAndCheckObjectMetadata = async (clientFileTypes, key) => {
 
     if (passedChecks === 2) {
       console.log("fetchAndCheckObjectMetadata() => All checks passed!");
+      downloadObject(params, "downloadedfiles");
     } else {
       console.log("fetchAndCheckObjectMetadata() => All checks did not pass!");
       await deleteS3Object(params);

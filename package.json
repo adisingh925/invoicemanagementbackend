@@ -21,6 +21,7 @@
     "mysql2": "^3.9.1",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
+    "pdfreader": "^3.0.2",
     "toobusy-js": "^0.5.1"
   }
 }
