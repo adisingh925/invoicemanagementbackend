@@ -80,7 +80,7 @@ export const fetchSingleMessage = async () => {
 
               console.log("sqsMessageCheck() => parsedPdf: " + parsedPdf);
 
-              for (let data of customerData) {
+              for (let data of customers) {
                 let parsingData = JSON.parse(data.parsing_data);
                 console.log(parsingData.identifier_regex);
                 const re = new RegExp(parsingData.identifier_regex);
