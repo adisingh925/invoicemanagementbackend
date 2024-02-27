@@ -125,8 +125,7 @@ export const insertData = async (tableName, columns, values) => {
 
     connection.query(query, values, (err, result) => {
       if (err) {
-        console.error(err.message);
-        reject(err);
+        reject(err.message);
       } else {
         resolve(result);
       }
