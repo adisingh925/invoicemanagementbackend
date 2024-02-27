@@ -75,13 +75,13 @@ export const fetchSingleMessage = async () => {
           let customers = await getCustomerForFileTypes(response, clientId);
 
           if (customers != -1) {
-            let parsedPdf = await parsePdf(filePath);
-            parsePdf = parsePdf.replace(/\s/g, "");
+            let parsedPdfData = await parsePdf(filePath);
+            parsedPdfData = parsedPdfData.replace(/\s/g, '');
 
             for (let data of customers) {
               let parsingData = JSON.parse(data.parsing_data);
               const re = new RegExp(parsingData.identifier_regex);
-              const match = re.test(parsedPdf);
+              const match = re.test(parsedPdfData);
 
               if (match) {
                 var columnArray = [];
@@ -92,10 +92,10 @@ export const fetchSingleMessage = async () => {
                     if (!key.includes("identifier_regex")) {
                       const re = new RegExp(parsingData[key]);
 
-                      const match = re.test(parsedPdf);
+                      const match = re.test(parsedPdfData);
                       if (match) {
                         columnArray.push(key);
-                        valueArray.push(parsedPdf.match(re)[1]);
+                        valueArray.push(parsedPdfData.match(re)[1]);
                       }
                     }
                   }
@@ -103,9 +103,7 @@ export const fetchSingleMessage = async () => {
 
                 insertData(clientId + "_invoices", columnArray, valueArray)
                   .then((result) => {
-                    console.log(
-                      "sqsMessageCheck() => Data inserted successfully"
-                    );
+                    console.log("sqsMessageCheck() => Data inserted successfully");
                     deleteLocalFile(filePath);
                   })
                   .catch((error) => {
