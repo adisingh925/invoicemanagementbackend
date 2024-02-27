@@ -63,6 +63,8 @@ export const fetchSingleMessage = async () => {
 
       let response = await fetchAndCheckObjectMetadata(clientFileTypes, params);
 
+      console.log("sqsMessageCheck() => response: " + response);
+
       if (response === -1) {
         console.log("sqsMessageCheck() => File metadata checks failed!");
       } else {
