@@ -71,11 +71,18 @@ export const fetchSingleMessage = async () => {
         try {
           await downloadObject(params, filePath);
           let customers = await getCustomerForFileTypes(response);
+
+          console.log("sqsMessageCheck() => customers: " + customers);
+          
           let parsedPdf = await parsePdf(filePath);
+
+          console.log("sqsMessageCheck() => parsedPdf: " + parsedPdf);
 
           if (customers != -1) {
             try {
               let customerData = await getCustomerForFileTypes(response);
+
+              console.log("sqsMessageCheck() => customerData: " + customerData);
 
               for (let data of customerData) {
                 let parsingData = JSON.parse(data.parsing_data);
