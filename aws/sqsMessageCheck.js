@@ -82,7 +82,6 @@ export const fetchSingleMessage = async () => {
 
               for (let data of customers) {
                 let parsingData = JSON.parse(data.parsing_data);
-                console.log(parsingData.identifier_regex);
                 const re = new RegExp(parsingData.identifier_regex);
 
                 const match = re.test(parsedPdf);
@@ -96,7 +95,7 @@ export const fetchSingleMessage = async () => {
                       if (!key.includes("identifier_regex")) {
                         const re = new RegExp(parsingData[key]);
 
-                        const match = re.test(str);
+                        const match = re.test(parsedPdf);
                         if (match) {
                           columnArray.push(key);
                           valueArray.push(str.match(re)[1]);
