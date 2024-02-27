@@ -75,40 +75,34 @@ export const fetchSingleMessage = async () => {
           let customers = await getCustomerForFileTypes(response, clientId);
 
           if (customers != -1) {
-            try {
-              let parsedPdf = await parsePdf(filePath);
+            let parsedPdf = await parsePdf(filePath);
 
-              for (let data of customers) {
-                let parsingData = JSON.parse(data.parsing_data);
-                const re = new RegExp(parsingData.identifier_regex);
-                const match = re.test(parsedPdf);
+            for (let data of customers) {
+              let parsingData = JSON.parse(data.parsing_data);
+              const re = new RegExp(parsingData.identifier_regex);
+              const match = re.test(parsedPdf);
 
-                if (match) {
-                  var columnArray = [];
-                  var valueArray = [];
+              if (match) {
+                var columnArray = [];
+                var valueArray = [];
 
-                  for (var key in parsingData) {
-                    if (parsingData.hasOwnProperty(key)) {
-                      if (!key.includes("identifier_regex")) {
-                        const re = new RegExp(parsingData[key]);
+                for (var key in parsingData) {
+                  if (parsingData.hasOwnProperty(key)) {
+                    if (!key.includes("identifier_regex")) {
+                      const re = new RegExp(parsingData[key]);
 
-                        const match = re.test(parsedPdf);
-                        if (match) {
-                          columnArray.push(key);
-                          valueArray.push(parsedPdf.match(re)[1]);
-                        }
+                      const match = re.test(parsedPdf);
+                      if (match) {
+                        columnArray.push(key);
+                        valueArray.push(parsedPdf.match(re)[1]);
                       }
                     }
                   }
-
-                  insertData(clientId + "_invoices", columnArray, valueArray);
-                  console.log(
-                    "sqsMessageCheck() => Data inserted successfully!"
-                  );
                 }
+
+                insertData(clientId + "_invoices", columnArray, valueArray);
+                console.log("sqsMessageCheck() => Data inserted successfully!");
               }
-            } catch (error) {
-              console.error("sqsMessageCheck() => " + error.message);
             }
           }
         } catch (error) {
