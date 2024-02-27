@@ -126,6 +126,7 @@ export const fetchSingleMessage = async () => {
     );
 
     console.log("sqsMessageCheck() => Message deleted successfully.");
+    fetchSingleMessage();
   } catch (error) {
     console.error("sqsMessageCheck() => " + error.message);
   }
