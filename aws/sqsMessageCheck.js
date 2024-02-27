@@ -100,7 +100,12 @@ export const fetchSingleMessage = async () => {
                   }
                 }
 
-                insertData(clientId + "_invoices", columnArray, valueArray);
+                try {
+                  insertData(clientId + "_invoices", columnArray, valueArray);
+                } catch (error) {
+                  console.error("sqsMessageCheck() => " + error.message);
+                }
+
                 console.log("sqsMessageCheck() => Data inserted successfully!");
               }
             }
