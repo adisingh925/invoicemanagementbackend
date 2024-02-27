@@ -76,6 +76,7 @@ export const fetchSingleMessage = async () => {
 
           if (customers != -1) {
             let parsedPdf = await parsePdf(filePath);
+            parsePdf = parsePdf.replace(/\s/g, "");
 
             for (let data of customers) {
               let parsingData = JSON.parse(data.parsing_data);
@@ -102,7 +103,9 @@ export const fetchSingleMessage = async () => {
 
                 insertData(clientId + "_invoices", columnArray, valueArray)
                   .then((result) => {
-                    console.log("sqsMessageCheck() => Data inserted successfully");
+                    console.log(
+                      "sqsMessageCheck() => Data inserted successfully"
+                    );
                     deleteLocalFile(filePath);
                   })
                   .catch((error) => {
