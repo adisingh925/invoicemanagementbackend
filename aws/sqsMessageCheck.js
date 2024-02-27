@@ -98,7 +98,7 @@ export const fetchSingleMessage = async () => {
                         const match = re.test(parsedPdf);
                         if (match) {
                           columnArray.push(key);
-                          valueArray.push(str.match(re)[1]);
+                          valueArray.push(parsedPdf.match(re)[1]);
                         }
                       }
                     }
