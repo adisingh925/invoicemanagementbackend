@@ -102,7 +102,8 @@ export const fetchSingleMessage = async () => {
 
                 insertData(clientId + "_invoices", columnArray, valueArray)
                   .then((result) => {
-                    console.log("Data inserted successfully");
+                    console.log("sqsMessageCheck() => Data inserted successfully");
+                    deleteLocalFile(filePath);
                   })
                   .catch((error) => {
                     console.error("sqsMessageCheck() => " + error);
