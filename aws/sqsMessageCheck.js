@@ -8,6 +8,7 @@ import { fetchAndCheckObjectMetadata } from "./s3ObjectCheck.js";
 import {
   getCustomerForFileTypes,
   getFileTypesForUser,
+  insertData,
 } from "../database/db.js";
 import { downloadObject } from "../filesystem/downloadS3Object.js";
 dotenv.config();
@@ -70,10 +71,41 @@ export const fetchSingleMessage = async () => {
         try {
           await downloadObject(params, filePath);
           let customers = await getCustomerForFileTypes(response);
+          let parsedPdf = await parsePdf(filePath);
 
           if (customers != -1) {
             try {
-              let parsedData = await parsePdf(filePath);
+              let customerData = await getCustomerForFileTypes(response);
+
+              for (let data of customerData) {
+                let parsingData = JSON.parse(data.parsing_data);
+                console.log(parsingData.identifier_regex);
+                const re = new RegExp(parsingData.identifier_regex);
+
+                const match = re.test(parsedPdf);
+
+                if (match) {
+                  var columnArray = [];
+                  var valueArray = [];
+
+                  for (var key in parsingData) {
+                    if (parsingData.hasOwnProperty(key)) {
+                      if (!key.includes("identifier_regex")) {
+                        const re = new RegExp(parsingData[key]);
+
+                        const match = re.test(str);
+                        if (match) {
+                          columnArray.push(key);
+                          valueArray.push(str.match(re)[1]);
+                        }
+                      }
+                    }
+                  }
+
+                  insertData(clientId + "_invoices", columnArray, valueArray);
+                  break;
+                }
+              }
               console.log("sqsMessageCheck() => Parsed data: " + parsedData);
             } catch (error) {
               console.error("sqsMessageCheck() => " + error.message);

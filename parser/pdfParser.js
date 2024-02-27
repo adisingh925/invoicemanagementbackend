@@ -9,7 +9,6 @@ export const parsePdf = async (path) => {
         console.error("parsePdf() => ", err.message);
         reject(err.message);
       } else if (!item) {
-        console.warn("parsePdf() => end of file!");
         resolve(textItems.join(" "));
       } else if (item.text) {
         textItems.push(item.text);

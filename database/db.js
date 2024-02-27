@@ -94,13 +94,13 @@ export const getFileTypesForUser = async (clientId) => {
   });
 };
 
-export const getCustomerForFileTypes = async (fileType) => {
+export const getCustomerForFileTypes = async (fileType, clientId) => {
   return new Promise((resolve, reject) => {
-    var query = `SELECT fk_client_id, parsing_data FROM ?? WHERE fileTypes = ?`;
+    var query = `SELECT customer_id, parsing_data FROM ?? WHERE fileTypes = ? and fk_client_id = ?`;
 
     connection.query(
       query,
-      [process.env.CUSTOMER_TABLE_NAME, fileType],
+      [process.env.CUSTOMER_TABLE_NAME, fileType, clientId],
       function (err, result) {
         if (err) {
           console.log(err.message);
@@ -114,5 +114,22 @@ export const getCustomerForFileTypes = async (fileType) => {
         }
       }
     );
+  });
+};
+
+export const insertData = async (tableName, columns, values) => {
+  return new Promise((resolve, reject) => {
+    const query = `INSERT INTO ${tableName} (${columns.join(
+      ", "
+    )}) VALUES (${values.join(", ")})`;
+
+    connection.query(query, values, (err, result) => {
+      if (err) {
+        console.error(err.message);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
   });
 };
