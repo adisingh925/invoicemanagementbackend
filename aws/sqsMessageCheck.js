@@ -78,12 +78,9 @@ export const fetchSingleMessage = async () => {
             try {
               let parsedPdf = await parsePdf(filePath);
 
-              console.log("sqsMessageCheck() => parsedPdf: " + parsedPdf);
-
               for (let data of customers) {
                 let parsingData = JSON.parse(data.parsing_data);
                 const re = new RegExp(parsingData.identifier_regex);
-
                 const match = re.test(parsedPdf);
 
                 if (match) {
@@ -105,10 +102,12 @@ export const fetchSingleMessage = async () => {
                   }
 
                   insertData(clientId + "_invoices", columnArray, valueArray);
+                  console.log(
+                    "sqsMessageCheck() => Data inserted successfully!"
+                  );
                   break;
                 }
               }
-              console.log("sqsMessageCheck() => Parsed data: " + parsedData);
             } catch (error) {
               console.error("sqsMessageCheck() => " + error.message);
             }
