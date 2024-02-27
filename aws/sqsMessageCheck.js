@@ -70,7 +70,7 @@ export const fetchSingleMessage = async () => {
         let filePath = "downloads/" + new Date().getTime();
         try {
           await downloadObject(params, filePath);
-          let customers = await getCustomerForFileTypes(response);
+          let customers = await getCustomerForFileTypes(response, clientId);
 
           console.log("sqsMessageCheck() => customers: " + customers);
           
