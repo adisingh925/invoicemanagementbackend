@@ -69,7 +69,7 @@ export const getFileTypesForUser = async (clientId) => {
     let cachedFileTypes = myCache.get(clientId);
 
     if (cachedFileTypes) {
-      resolve(cachedFileTypes.fileTypes);
+      resolve(cachedFileTypes);
     } else {
       var query = `SELECT fileTypes FROM ?? WHERE fk_client_id = ?`;
 
