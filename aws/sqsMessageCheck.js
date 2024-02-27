@@ -105,7 +105,6 @@ export const fetchSingleMessage = async () => {
                   console.log(
                     "sqsMessageCheck() => Data inserted successfully!"
                   );
-                  break;
                 }
               }
             } catch (error) {
