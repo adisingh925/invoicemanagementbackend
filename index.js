@@ -12,6 +12,7 @@ dotenv.config();
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
+import getData from "./routes/getData.js";
 import wildCard from "./routes/wildCard.js";
 import "./cron/sqsCheck.js";
 
@@ -34,6 +35,7 @@ app.use(json({ limit: "1mb" }));
 app.use("/", ping);
 app.use("/", login);
 app.use("/", signup);
+app.use("/", getData);
 app.use("/", wildCard);
 
 /**

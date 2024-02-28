@@ -13,7 +13,7 @@ const verifytoken = (req, res, next) => {
     }
     
     const verify = _verify(token, process.env.JWT_SECRET);
-    req.email = verify.email;
+    req.id = verify.id;
     next();
   } catch (error) {
     return res

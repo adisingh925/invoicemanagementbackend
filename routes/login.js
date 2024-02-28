@@ -7,7 +7,7 @@ const { sign } = jwt;
 import { validationResult, body } from "express-validator";
 import { getUser } from "../database/db.js";
 import { loginRateLimiter } from "../ratelimiters/rateLimiters.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 /**
@@ -45,7 +45,7 @@ router.post(
       }
 
       const tokenPayload = {
-        email: req.body.email,
+        id: user.client_id,
       };
 
       const authtoken = sign(tokenPayload, process.env.JWT_SECRET, {

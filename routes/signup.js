@@ -26,6 +26,7 @@ router.post(
       if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array(), code: -1 });
       }
+
       let user = await getUser(req.body.email);
 
       if (user != -1) {
@@ -37,11 +38,10 @@ router.post(
 
       const salt = await genSalt(10);
       const securePassword = await hash(req.body.password, salt);
-
-      await createUser(req.body.email, securePassword);
+      let clientId = await createUser(req.body.email, securePassword);
 
       const tokenPayload = {
-        email: req.body.email,
+        id: clientId,
       };
 
       const authtoken = sign(tokenPayload, process.env.JWT_SECRET, {

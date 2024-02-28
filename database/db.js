@@ -23,7 +23,7 @@ connection.getConnection((err, connection) => {
 
 export const getUser = async (email) => {
   return new Promise((resolve, reject) => {
-    var query = `SELECT * FROM ?? where email = ?`;
+    var query = `SELECT client_id, password FROM ?? where email = ?`;
 
     connection.query(
       query,
@@ -51,13 +51,13 @@ export const createUser = async (email, password) => {
     connection.query(
       query,
       [process.env.CLIENT_TABLE_NAME, email, password],
-      function (err) {
+      function (err, result) {
         if (err) {
           console.log(err.message);
           reject(err);
         } else {
           console.log("User created successfully!");
-          resolve(1);
+          resolve(result.insertId);
         }
       }
     );
@@ -130,5 +130,33 @@ export const insertData = async (tableName, columns, values) => {
         resolve(result);
       }
     });
+  });
+};
+
+export const fetchDataForCustomerInPages = async (
+  customerId,
+  page,
+  limit,
+  tableName
+) => {
+  return new Promise((resolve, reject) => {
+    const offset = (page - 1) * limit;
+    const query = `SELECT * FROM ?? WHERE fk_customer_id = ? LIMIT ? OFFSET ?`;
+
+    connection.query(
+      query,
+      [tableName, customerId, limit, offset],
+      (err, result) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          if(result.length === 0) {
+            resolve(-1);
+          }
+          
+          resolve(result);
+        }
+      }
+    );
   });
 };
