@@ -28,6 +28,7 @@ const httpsServer = _createServer(
   app
 );
 
+app.use(cors())
 app.use(checkBusy);
 app.use(json({ limit: "1mb" }));
 
