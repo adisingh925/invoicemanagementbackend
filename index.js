@@ -33,8 +33,8 @@ app.use(json({ limit: "1mb" }));
 
 //All routes
 app.use("/", ping);
-app.use("/", login);
-app.use("/", signup);
+app.use("/auth", login);
+app.use("/auth", signup);
 app.use("/", getData);
 app.use("/", wildCard);
 
