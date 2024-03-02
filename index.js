@@ -9,6 +9,7 @@ import { createServer as _createServer } from "https";
 import checkBusy from "./middleware/toobusy.js";
 import dotenv from "dotenv";
 dotenv.config();
+import cors from "cors";
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
