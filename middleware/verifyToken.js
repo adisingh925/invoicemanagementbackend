@@ -1,6 +1,6 @@
-import pkg from 'jsonwebtoken';
+import pkg from "jsonwebtoken";
 const { verify: _verify } = pkg;
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const verifytoken = (req, res, next) => {
@@ -9,16 +9,14 @@ const verifytoken = (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .json({ error: "Please authenticate using a valid token", code: -1 });
+        .json({ msg: "Please authenticate using a valid token!", code: -1 });
     }
-    
+
     const verify = _verify(token, process.env.JWT_SECRET);
     req.id = verify.id;
     next();
   } catch (error) {
-    return res
-      .status(401)
-      .json({ error: "Please authenticate using a valid token", code: -1 });
+    return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
   }
 };
 
