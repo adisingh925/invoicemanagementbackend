@@ -16,7 +16,9 @@ const verifytoken = (req, res, next) => {
     req.id = verify.id;
     next();
   } catch (error) {
-    return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
+    return res
+      .status(401)
+      .json({ msg: "Please authenticate using a valid token!", code: -1 });
   }
 };
 
