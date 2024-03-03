@@ -150,10 +150,32 @@ export const fetchDataForCustomerInPages = async (
         if (err) {
           reject(err.message);
         } else {
-          if(result.length === 0) {
+          if (result.length === 0) {
             resolve(-1);
           }
-          
+
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+export const getConfigsForClient = async (client_id) => {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT customer_id, customer_name, parsing_data FROM ?? WHERE fk_client_id = ?`;
+
+    connection.query(
+      query,
+      [process.env.CUSTOMER_TABLE_NAME, client_id],
+      (err, result) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          if (result.length === 0) {
+            resolve(-1);
+          }
+
           resolve(result);
         }
       }
