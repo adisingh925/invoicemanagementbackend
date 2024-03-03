@@ -9,7 +9,7 @@ const verifytoken = (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .json({ msg: "Please authenticate using a valid token!", code: -1 });
+        .json({ msg: "Please authenticate using a valid token!", code: -2 });
     }
 
     const verify = _verify(token, process.env.JWT_SECRET);
@@ -18,7 +18,7 @@ const verifytoken = (req, res, next) => {
   } catch (error) {
     return res
       .status(401)
-      .json({ msg: "Please authenticate using a valid token!", code: -1 });
+      .json({ msg: "Please authenticate using a valid token!", code: -2 });
   }
 };
 
