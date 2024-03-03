@@ -31,7 +31,7 @@ const httpsServer = _createServer(
   app
 );
 
-app.use(cors())
+app.use(cors());
 app.use(checkBusy);
 app.use(json({ limit: "1mb" }));
 
@@ -49,7 +49,7 @@ app.use("/", wildCard);
  */
 app.use((error, _req, res, next) => {
   if (error) {
-    res.status(500).json({ msg: error.message, code: -1 });
+    return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
   next();
 });
