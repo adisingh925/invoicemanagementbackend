@@ -183,13 +183,13 @@ export const getConfigsForClient = async (client_id) => {
   });
 };
 
-export const updateConfigForCustomer = async (customer_id, parsing_data) => {
+export const updateConfigForCustomer = async (client_id, customer_id, parsing_data) => {
   return new Promise((resolve, reject) => {
-    const query = `UPDATE ?? SET parsing_data = ? WHERE customer_id = ?`;
+    const query = `UPDATE ?? SET parsing_data = ? WHERE customer_id = ? and fk_client_id = ?`;
 
     connection.query(
       query,
-      [process.env.CUSTOMER_TABLE_NAME, parsing_data, customer_id],
+      [process.env.CUSTOMER_TABLE_NAME, parsing_data, customer_id, client_id],
       (err, result) => {
         if (err) {
           reject(err.message);
