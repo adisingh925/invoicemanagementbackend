@@ -134,18 +134,18 @@ export const insertData = async (tableName, columns, values) => {
 };
 
 export const fetchDataForCustomerInPages = async (
-  customerId,
+  clientId,
   page,
   limit,
   tableName
 ) => {
   return new Promise((resolve, reject) => {
     const offset = (page - 1) * limit;
-    const query = `SELECT * FROM ?? WHERE fk_customer_id = ? LIMIT ? OFFSET ?`;
+    const query = `SELECT * FROM ?? WHERE fk_client_id = ? LIMIT ? OFFSET ?`;
 
     connection.query(
       query,
-      [tableName, customerId, limit, offset],
+      [tableName, clientId, limit, offset],
       (err, result) => {
         if (err) {
           reject(err.message);
@@ -183,7 +183,11 @@ export const getConfigsForClient = async (client_id) => {
   });
 };
 
-export const updateConfigForCustomer = async (client_id, customer_id, parsing_data) => {
+export const updateConfigForCustomer = async (
+  client_id,
+  customer_id,
+  parsing_data
+) => {
   return new Promise((resolve, reject) => {
     const query = `UPDATE ?? SET parsing_data = ? WHERE customer_id = ? and fk_client_id = ?`;
 

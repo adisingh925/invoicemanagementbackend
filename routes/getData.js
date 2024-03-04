@@ -10,10 +10,9 @@ router.get("/getData", verifytoken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const customerId = parseInt(req.query.customerId) || req.id;
 
     const result = await fetchDataForCustomerInPages(
-      customerId,
+      req.id,
       page,
       limit,
       req.id + "_invoices"

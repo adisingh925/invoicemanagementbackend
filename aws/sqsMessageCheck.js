@@ -104,6 +104,9 @@ export const fetchSingleMessage = async () => {
                 columnArray.push("fk_customer_id");
                 valueArray.push(data.customer_id);
 
+                columnArray.push("fk_client_id");
+                valueArray.push(clientId);
+
                 insertData(clientId + "_invoices", columnArray, valueArray)
                   .then((result) => {
                     console.log(
