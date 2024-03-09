@@ -14,6 +14,7 @@ import { downloadObject } from "../filesystem/downloadS3Object.js";
 dotenv.config();
 import fs from "fs";
 import { parsePdf } from "../parser/pdfParser.js";
+import { parseImage } from "../imageprocessing/tesseractProcessor.js";
 
 const client = new SQSClient({ region: process.env.AWS_REGION });
 
@@ -75,7 +76,13 @@ export const fetchSingleMessage = async () => {
           let customers = await getCustomerForFileTypes(response, clientId);
 
           if (customers != -1) {
-            let parsedPdfData = await parsePdf(filePath);
+            let parsedPdfData = "";
+            if (response.includes("pdf")) {
+              parsedPdfData = await parsePdf(filePath);
+            } else if (response.includes("image")) {
+              parsedPdfData = await parseImage(filePath);
+            }
+
             parsedPdfData = parsedPdfData.replace(/\s/g, "");
 
             for (let data of customers) {

@@ -23,6 +23,7 @@
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "pdfreader": "^3.0.2",
+    "tesseract.js": "^5.0.5",
     "toobusy-js": "^0.5.1"
   }
 }
