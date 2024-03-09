@@ -11,6 +11,7 @@ COPY /ssl /backend/ssl
 COPY /cron /backend/cron
 COPY /aws /backend/aws
 COPY /parser /backend/parser
+COPY /imageprocessing /backend/imageprocessing
 COPY filesystem /backend/filesystem
 COPY .env.vault .
 RUN npm install
