@@ -17,6 +17,8 @@ import getData from "./routes/getData.js";
 import wildCard from "./routes/wildCard.js";
 import getConfigs from "./routes/getConfigs.js";
 import updateConfig from "./routes/updateConfig.js";
+import resetPassword from "./routes/resetPassword.js";
+import resetPasswordLink from "./routes/resetPasswordLink.js";
 import "./cron/sqsCheck.js";
 
 const httpServer = createServer(app);
@@ -42,6 +44,8 @@ app.use("/auth", signup);
 app.use("/", getData);
 app.use("/", getConfigs);
 app.use("/", updateConfig);
+app.use("/auth", resetPassword);
+app.use("/auth", resetPasswordLink);
 app.use("/", wildCard);
 
 /**

@@ -46,11 +46,11 @@ export const getUser = async (email) => {
 
 export const createUser = async (email, password) => {
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO ?? (email, password) VALUES (?, ?)`;
+    var query = `INSERT INTO ?? (email, password, password_update_time) VALUES (?, ?, ?)`;
 
     connection.query(
       query,
-      [process.env.CLIENT_TABLE_NAME, email, password],
+      [process.env.CLIENT_TABLE_NAME, email, password, new Date()],
       function (err, result) {
         if (err) {
           console.log(err.message);
@@ -58,6 +58,54 @@ export const createUser = async (email, password) => {
         } else {
           console.log("User created successfully!");
           resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const checkPasswordUpdateTime = async (userId) => {
+  return new Promise((resolve, reject) => {
+    var query = `SELECT password_update_time from ?? where client_id = ?`;
+
+    connection.query(
+      query,
+      [process.env.CLIENT_TABLE_NAME, userId],
+      function (err, result) {
+        if (err) {
+          console.log(err.message);
+          reject(err);
+        } else {
+          if (result.length > 0) {
+            console.log("password update time fetched successfully!");
+            resolve(result[0]);
+          }
+
+          resolve(-1);
+        }
+      }
+    );
+  });
+};
+
+export const updatePassword = async (userId, password) => {
+  return new Promise((resolve, reject) => {
+    var query = `UPDATE ?? SET password = ?, password_update_time = ? WHERE client_id = ?`;
+
+    connection.query(
+      query,
+      [process.env.CLIENT_TABLE_NAME, password, new Date(), userId],
+      function (err, result) {
+        if (err) {
+          console.log(err.message);
+          reject(err);
+        } else {
+          if (result.length > 0) {
+            console.log("password updated successfully!");
+            resolve(result[0]);
+          }
+
+          resolve(-1);
         }
       }
     );

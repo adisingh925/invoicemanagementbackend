@@ -54,6 +54,7 @@ router.post(
         code: 1,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }
