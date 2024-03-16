@@ -17,7 +17,7 @@ router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
     if (process.env.ENVIRONMENT === "production") {
       res.redirect(`http://localhost:3000/reset-password/${req.params.token}`);
     } else {
-      res.redirect(`http://3.110.195.159/reset-password/${req.params.token}`);
+      res.redirect(`https://master.d3qy4qha9z6m6l.amplifyapp.com/reset-password/${req.params.token}`);
     }
   } catch (error) {
     console.log(error);
