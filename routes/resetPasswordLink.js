@@ -29,7 +29,7 @@ router.get("/sendResetLink/:email", async (req, res) => {
       [`${req.params.email}`],
       {
         email: req.params.email,
-        resetLink: `${process.env.SERVER_URL}/resetPassword/${token}`,
+        resetLink: `${process.env.SERVER_URL}/auth/resetPassword/${token}`,
         expireTime: "5",
         companyName: "Blivix",
         year: "2021",
