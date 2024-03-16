@@ -25,8 +25,6 @@ router.get("/sendResetLink/:email", async (req, res) => {
       expiresIn: process.env.RESET_PASSWORD_EXPIRE_TIME,
     });
 
-    console.log(token);
-
     sendEmail(
       [`${req.params.email}`],
       {
