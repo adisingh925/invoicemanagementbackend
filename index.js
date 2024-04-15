@@ -2,7 +2,6 @@
 
 // Importing required modules
 import express, { json } from "express";
-const app = express();
 import { readFileSync } from "fs";
 import { createServer } from "http";
 import { createServer as _createServer } from "https";
@@ -13,14 +12,14 @@ import cors from "cors";
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
-import getData from "./routes/getData.js";
 import wildCard from "./routes/wildCard.js";
-import getConfigs from "./routes/getConfigs.js";
-import updateConfig from "./routes/updateConfig.js";
 import resetPassword from "./routes/resetPassword.js";
 import resetPasswordLink from "./routes/resetPasswordLink.js";
-import "./cron/sqsCheck.js";
+import "./cron/cron.js";
+import morganMiddleware from "./logging/morgan.js";
 
+const app = express();
+app.use(morganMiddleware);
 const httpServer = createServer(app);
 
 const httpsServer = _createServer(
@@ -41,9 +40,6 @@ app.use(json({ limit: "1mb" }));
 app.use("/", ping);
 app.use("/auth", login);
 app.use("/auth", signup);
-app.use("/", getData);
-app.use("/", getConfigs);
-app.use("/", updateConfig);
 app.use("/auth", resetPassword);
 app.use("/auth", resetPasswordLink);
 app.use("/", wildCard);

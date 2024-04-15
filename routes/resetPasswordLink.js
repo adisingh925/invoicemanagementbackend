@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import { getUser } from "../database/db.js";
 import { sendEmail } from "../mailing/nodemailer.js";
 import dotenv from "dotenv";
+import { emailLinkRateLimiter } from "../ratelimiters/rateLimiters.js";
 dotenv.config();
 
 /**
  * @route GET /sendResetLink
  */
-router.get("/sendResetLink/:email", async (req, res) => {
+router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
   try {
     let user = await getUser(req.params.email);
 
@@ -29,7 +30,7 @@ router.get("/sendResetLink/:email", async (req, res) => {
       [`${req.params.email}`],
       {
         email: req.params.email,
-        resetLink: `${process.env.SERVER_URL}/auth/resetPassword/${token}`,
+        resetLink: `${process.env.SERVER_URL}/auth/resetpassword/${token}`,
         expireTime: "5",
         companyName: "Blivix",
         year: "2021",

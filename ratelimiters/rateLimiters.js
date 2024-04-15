@@ -39,8 +39,8 @@ export const signupRateLimiter = rateLimit({
   },
 });
 
-export const uploadRateLimiter = rateLimit({
-  windowMs: 30 * 1000,
+export const emailLinkRateLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
   limit: 5,
   standardHeaders: true,
   legacyHeaders: false,

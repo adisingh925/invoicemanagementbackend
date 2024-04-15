@@ -7,6 +7,7 @@ const { sign } = jwt;
 import pkg from "bcryptjs";
 const { genSalt, hash } = pkg;
 import dotenv from "dotenv";
+import { emailLinkRateLimiter } from "../ratelimiters/rateLimiters.js";
 dotenv.config();
 
 /**
@@ -15,9 +16,11 @@ dotenv.config();
 router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
   try {
     if (process.env.ENVIRONMENT === "development") {
-      res.redirect(`http://localhost:3000/reset-password/${req.params.token}`);
+      res.redirect(`http://localhost:3000/resetpassword/${req.params.token}`);
     } else {
-      res.redirect(`https://master.d3qy4qha9z6m6l.amplifyapp.com/reset-password/${req.params.token}`);
+      res.redirect(
+        `https://master.d3qy4qha9z6m6l.amplifyapp.com/resetpassword/${req.params.token}`
+      );
     }
   } catch (error) {
     console.log(error);
@@ -26,7 +29,7 @@ router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
 });
 
 router.post(
-  "/resetPassword/:token",
+  "/resetpassword/:token",
   verifyPasswordResetToken,
   async (req, res) => {
     try {
