@@ -17,6 +17,7 @@ import resetPassword from "./routes/resetPassword.js";
 import resetPasswordLink from "./routes/resetPasswordLink.js";
 import "./cron/cron.js";
 import morganMiddleware from "./logging/morgan.js";
+import logger from "./logging/winston.js";
 
 const app = express();
 app.use(morganMiddleware);
@@ -49,15 +50,16 @@ app.use("/", wildCard);
  */
 app.use((error, _req, res, next) => {
   if (error) {
+    logger.error(error);
     return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
   next();
 });
 
 httpServer.listen(process.env.HTTP_PORT, () => {
-  console.log(`HTTP Server running on port ${process.env.HTTP_PORT}`);
+  logger.info(`HTTP Server running on port ${process.env.HTTP_PORT}`);
 });
 
 httpsServer.listen(process.env.HTTPS_PORT, () => {
-  console.log(`HTTPS Server running on port ${process.env.HTTPS_PORT}`);
+  logger.info(`HTTPS Server running on port ${process.env.HTTPS_PORT}`);
 });

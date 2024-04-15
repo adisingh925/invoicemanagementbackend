@@ -54,12 +54,12 @@ const transports = [
   new _transports.Console(),
   // Allow to print all the error level messages inside the error.log file
   new _transports.File({
-    filename: 'logs/error.log',
+    filename: 'logs/error.ans',
     level: 'error',
   }),
   // Allow to print all the error message inside the all.log file
   // (also the error log that are also printed inside the error.log(
-  new _transports.File({ filename: 'logs/all.log' }),
+  new _transports.File({ filename: 'logs/all.ans' }),
 ]
 
 // Create the logger instance that has to be exported
