@@ -5,15 +5,18 @@ import { checkPasswordUpdateTime } from "../database/db.js";
 dotenv.config();
 import path from "path";
 import { fileURLToPath } from "url";
+import logger from "../logging/winston.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const verifyPasswordResetToken = async (req, res, next) => {
   try {
+    logger.info("Entering Password Reset Token Verification Middleware");
+
     const token = req.params.token;
 
     if (!token) {
-      console.log("No token found");
+      logger.info("No token found, Returning response");
       if (req.method === "GET") {
         return res.sendFile(
           path.join(__dirname, "../templates/invalid_password_reset_token.html")
@@ -23,12 +26,14 @@ const verifyPasswordResetToken = async (req, res, next) => {
       }
     }
 
+    logger.info("Token found, Verifying token");
     const verify = _verify(token, process.env.JWT_PASSWORD_RESET_SECRET);
 
+    logger.info("Token verified, Checking password update time");
     let passwordUpdateTime = await checkPasswordUpdateTime(verify.id);
 
     if (passwordUpdateTime === -1) {
-      console.log("User not found");
+      logger.info("Password update time not found, Returning response");
       if (req.method === "GET") {
         return res.sendFile(
           path.join(__dirname, "../templates/invalid_password_reset_token.html")
@@ -38,11 +43,16 @@ const verifyPasswordResetToken = async (req, res, next) => {
       }
     }
 
+    logger.info("Password update time found, Comparing token creation time");
     const tokenCreationTime = new Date(verify.iat * 1000);
-    let passwordUpdateTimeDate = new Date(passwordUpdateTime.password_update_time);
+    let passwordUpdateTimeDate = new Date(
+      passwordUpdateTime.password_update_time
+    );
 
     if (tokenCreationTime < passwordUpdateTimeDate) {
-      console.log("Token is older than password update time");
+      logger.info(
+        "Token is older than password update time, Returning response"
+      );
       if (req.method === "GET") {
         return res.sendFile(
           path.join(__dirname, "../templates/invalid_password_reset_token.html")
@@ -52,10 +62,13 @@ const verifyPasswordResetToken = async (req, res, next) => {
       }
     }
 
+    logger.info(
+      "Token is not older than password update time, Proceeding to next middleware"
+    );
     req.id = verify.id;
     next();
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
     if (req.method === "GET") {
       return res.sendFile(
         path.join(__dirname, "../templates/invalid_password_reset_token.html")

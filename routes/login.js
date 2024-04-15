@@ -8,6 +8,7 @@ import { validationResult, body } from "express-validator";
 import { getUser } from "../database/db.js";
 import { loginRateLimiter } from "../ratelimiters/rateLimiters.js";
 import dotenv from "dotenv";
+import logger from "../logging/winston.js";
 dotenv.config();
 
 /**
@@ -24,25 +25,37 @@ router.post(
   ],
   async (req, res) => {
     try {
+      logger.info("Validating login request");
       const result = validationResult(req);
 
       if (!result.isEmpty()) {
+        logger.error("Validation failed, Returning response");
         return res.status(400).json({ errors: result.array() });
       }
+
+      logger.info(
+        "Login request validated successfully, Fetching user details"
+      );
 
       const { email, password } = req.body;
 
       let user = await getUser(email);
 
       if (user == -1) {
+        logger.info("User not found, Returning response");
         return res.status(400).json({ msg: "User Not Exists!", code: -1 });
       }
+
+      logger.info("User found, comparing password");
 
       const passwordCompare = await compare(password, user.password);
 
       if (!passwordCompare) {
+        logger.info("Password mismatch, Returning response");
         return res.status(400).json({ msg: "Invalid Credentials!", code: -1 });
       }
+
+      logger.info("Password matched, generating token");
 
       const tokenPayload = {
         id: user.client_id,
@@ -52,12 +65,15 @@ router.post(
         expiresIn: process.env.TOKEN_EXPIRE_TIME,
       });
 
+      logger.info("Token generated successfully, Returning response");
+
       return res.status(200).json({
         msg: "login successful!",
         token: authtoken,
         code: 1,
       });
     } catch (error) {
+      logger.error(error);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }

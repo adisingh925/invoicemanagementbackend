@@ -29,7 +29,7 @@ export const getUser = async (email) => {
       [process.env.CLIENT_TABLE_NAME, email],
       function (err, result) {
         if (err) {
-          console.log(err.message);
+          logger.error(err.message);
           reject(err);
         } else {
           if (result.length > 0) {
@@ -52,10 +52,9 @@ export const createUser = async (email, password) => {
       [process.env.CLIENT_TABLE_NAME, email, password, new Date()],
       function (err, result) {
         if (err) {
-          console.log(err.message);
+          logger.error(err.message);
           reject(err);
         } else {
-          console.log("User created successfully!");
           resolve(result.insertId);
         }
       }
@@ -72,11 +71,10 @@ export const checkPasswordUpdateTime = async (userId) => {
       [process.env.CLIENT_TABLE_NAME, userId],
       function (err, result) {
         if (err) {
-          console.log(err.message);
+          logger.error(err.message);
           reject(err);
         } else {
           if (result.length > 0) {
-            console.log("password update time fetched successfully!");
             resolve(result[0]);
           }
 
@@ -96,11 +94,10 @@ export const updatePassword = async (userId, password) => {
       [process.env.CLIENT_TABLE_NAME, password, new Date(), userId],
       function (err, result) {
         if (err) {
-          console.log(err.message);
+          logger.error(err.message);
           reject(err);
         } else {
           if (result.length > 0) {
-            console.log("password updated successfully!");
             resolve(result[0]);
           }
 

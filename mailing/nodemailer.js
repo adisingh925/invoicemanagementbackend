@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import Handlebars from "handlebars";
 import dotenv from "dotenv";
+import logger from "../logging/winston.js";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -26,6 +27,8 @@ export const sendEmail = async (
   fromName
 ) => {
   try {
+    logger.info("Sending reset link email");
+
     const source = fs.readFileSync(templatePath, { encoding: "utf-8" });
     const template = Handlebars.compile(source);
     const html = template(templateData);
@@ -39,10 +42,10 @@ export const sendEmail = async (
 
     transporter.sendMail(info, function (error) {
       if (error) {
-        console.log(error.message);
+        logger.error(error.message);
       }
     });
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
   }
 };

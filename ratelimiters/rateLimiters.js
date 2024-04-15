@@ -1,4 +1,5 @@
 import rateLimit from "express-rate-limit";
+import logger from "../logging/winston.js";
 
 export const pingRateLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -64,4 +65,3 @@ export const wildcardRateLimiter = rateLimit({
     });
   },
 });
-
