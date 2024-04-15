@@ -1,8 +1,7 @@
 import { createPool } from "mysql2";
 import dotenv from "dotenv";
 dotenv.config();
-import NodeCache from "node-cache";
-const myCache = new NodeCache();
+import logger from "../logging/winston.js";
 
 var connection = createPool({
   connectionLimit: 5,
@@ -14,10 +13,10 @@ var connection = createPool({
 
 connection.getConnection((err, connection) => {
   if (err) {
-    console.log("Error connecting to MySQL", err);
+    logger.info("Error connecting to MySQL", err);
     return;
   }
-  console.log("Connected to MySQL");
+  logger.info("Connected to MySQL");
   connection.release();
 });
 
@@ -111,5 +110,3 @@ export const updatePassword = async (userId, password) => {
     );
   });
 };
-
-

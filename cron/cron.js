@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import dotenv from "dotenv";
+import logger from "../logging/winston.js";
 dotenv.config();
 
 cron.schedule("* * * * *", () => {
-  console.log("Running a task every minute");
+  logger.info("Running a task every minute");
 });
