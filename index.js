@@ -9,6 +9,7 @@ import checkBusy from "./middleware/toobusy.js";
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
+import helmet from "helmet";
 import ping from "./routes/ping.js";
 import login from "./routes/login.js";
 import signup from "./routes/signup.js";
@@ -20,6 +21,7 @@ import morganMiddleware from "./logging/morgan.js";
 import logger from "./logging/winston.js";
 
 const app = express();
+app.use(helmet());
 app.use(morganMiddleware);
 const httpServer = createServer(app);
 
