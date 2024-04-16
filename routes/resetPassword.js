@@ -44,7 +44,7 @@ router.post(
       let response = updatePassword(req.id, securePassword);
 
       if (response === -1) {
-        logger.error("Password Reset Failed!, Returning response");
+        logger.info("Password Reset Failed!, Returning response");
         return res
           .status(400)
           .json({ msg: "Password Reset Failed!", code: -1 });

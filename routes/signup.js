@@ -27,7 +27,7 @@ router.post(
       const result = validationResult(req);
 
       if (!result.isEmpty()) {
-        logger.error("Validation failed, Returning response");
+        logger.warn("Validation failed, Returning response");
         return res.status(400).json({ errors: result.array(), code: -1 });
       }
 
