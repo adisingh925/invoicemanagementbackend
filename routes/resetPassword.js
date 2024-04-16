@@ -7,7 +7,6 @@ const { sign } = jwt;
 import pkg from "bcryptjs";
 const { genSalt, hash } = pkg;
 import dotenv from "dotenv";
-import { emailLinkRateLimiter } from "../ratelimiters/rateLimiters.js";
 import logger from "../logging/winston.js";
 dotenv.config();
 
@@ -18,7 +17,9 @@ router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
   try {
     if (process.env.ENVIRONMENT === "development") {
       logger.info("Redirecting to development reset password page");
-      res.redirect(`http://localhost:3000/resetpassword/${req.params.token}`);
+      res.redirect(
+        `${process.env.WEBSITE_URL}/resetpassword/${req.params.token}`
+      );
     } else {
       logger.info("Redirecting to reset password page");
       res.redirect(
