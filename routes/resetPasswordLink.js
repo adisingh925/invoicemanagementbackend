@@ -17,10 +17,12 @@ router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
       `[${req.uuid} <> ${req.ip}] -> Password Reset Link Requested, verifying user -> [email = ${req.params.email}]`
     );
 
-    let user = await getUser(req.params.email);
+    let user = await getUser(req);
 
     if (user === -1) {
-      logger.info(`[${req.uuid} <> ${req.ip}] -> User not found, Returning response`);
+      logger.info(
+        `[${req.uuid} <> ${req.ip}] -> User not found, Returning response`
+      );
       return res.status(200).json({ code: 1, msg: "Reset link sent!" });
     }
 
@@ -52,10 +54,13 @@ router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
       "Password Reset Request",
       "templates/passwordResetTemplate.html",
       "no-reply",
-      "Blivix Support"
+      "Blivix Support",
+      req
     );
 
-    logger.info(`[${req.uuid} <> ${req.ip}] -> Reset link sent!, Returning response`);
+    logger.info(
+      `[${req.uuid} <> ${req.ip}] -> Reset link sent!, Returning response`
+    );
     return res.status(200).json({ code: 1, msg: "Reset link sent!" });
   } catch (error) {
     logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);

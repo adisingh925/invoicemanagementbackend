@@ -53,7 +53,7 @@ app.use((req, res, next) => {
     logger.warn(
       `[${req.uuid} <> ${req.ip}] -> Redirecting insecure request! -> [URL = ${req.url}]`
     );
-    return res.redirect(`https://${req.headers.host}${req.url}`);
+    return res.redirect(307, `https://${req.headers.host}${req.url}`);
   }
 
   next();

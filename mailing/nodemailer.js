@@ -24,10 +24,13 @@ export const sendEmail = async (
   subject,
   templatePath,
   fromMail,
-  fromName
+  fromName,
+  req
 ) => {
   try {
-    logger.info("Sending reset link email");
+    logger.info(
+      `[${req.uuid} <> ${req.ip}] -> Sending reset link email -> [email = ${emailList}]`
+    );
 
     const source = fs.readFileSync(templatePath, { encoding: "utf-8" });
     const template = Handlebars.compile(source);
@@ -42,10 +45,10 @@ export const sendEmail = async (
 
     transporter.sendMail(info, function (error) {
       if (error) {
-        logger.error(error.message);
+        logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       }
     });
   } catch (error) {
-    logger.error(error.message);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
   }
 };
