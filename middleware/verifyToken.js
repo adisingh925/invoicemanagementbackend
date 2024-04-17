@@ -17,7 +17,7 @@ const verifytoken = (req, res, next) => {
     }
 
     logger.info(
-      `[${req.uuid} -> Token found, verifying token -> [token = ${token}]`
+      `[${req.uuid} <> ${req.ip}] -> Token found, verifying token -> [token = ${token}]`
     );
     const verify = _verify(token, process.env.JWT_SECRET);
 

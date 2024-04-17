@@ -31,7 +31,7 @@ router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
       );
     }
   } catch (error) {
-    logger.error(`${req.uuid} -> ${error}`);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
     return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
 });
@@ -42,7 +42,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `${req.uuid} -> Updating password -> [userId = ${req.id}], token = ${req.params.token}`
+        `[${req.uuid} <> ${req.ip}] -> Updating password -> [userId = ${req.id}], token = ${req.params.token}`
       );
 
       const salt = await genSalt(10);

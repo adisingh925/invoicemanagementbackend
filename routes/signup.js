@@ -32,9 +32,7 @@ router.post(
 
       if (!result.isEmpty()) {
         logger.warn(
-          `[${
-            req.uuid
-          }] -> Validation failed, Returning response -> ${JSON.stringify(
+          `[${req.uuid} <> ${req.ip}] -> Validation failed, Returning response -> ${JSON.stringify(
             result.array()
           )}`
         );

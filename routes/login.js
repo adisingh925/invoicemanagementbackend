@@ -34,9 +34,7 @@ router.post(
 
       if (!result.isEmpty()) {
         logger.info(
-          `[${
-            req.uuid
-          }] -> Validation failed, Returning response -> ${JSON.stringify(
+          `[${req.uuid} <> ${req.ip}] -> Validation failed, Returning response -> ${JSON.stringify(
             result.array()
           )}`
         );
