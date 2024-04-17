@@ -6,8 +6,10 @@ export const pingRateLimiter = rateLimit({
   limit: 1000,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: function (_req, res) {
-    logger.info("Rate limit exceeded for ping for IP " + _req.ip);
+  handler: function (req, res) {
+    logger.info(
+      `[${req.uuid}] -> Ping rate limit exceeded for ping for IP -> [IP = ${req.ip}]`
+    );
     return res.status(429).json({
       code: -1,
       msg: "You are being rate limited. Please try again later.",
@@ -20,8 +22,10 @@ export const loginRateLimiter = rateLimit({
   limit: 24,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: function (_req, res) {
-    logger.info("Rate limit exceeded for login for IP " + _req.ip);
+  handler: function (req, res) {
+    logger.info(
+      `[${req.uuid}] -> Rate limit exceeded for login for IP -> [IP = ${req.ip}]`
+    );
     return res.status(429).json({
       code: -1,
       msg: "You are being rate limited. Please try again later.",
@@ -34,8 +38,10 @@ export const signupRateLimiter = rateLimit({
   limit: 50,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: function (_req, res) {
-    logger.info("Rate limit exceeded for signup for IP " + _req.ip);
+  handler: function (req, res) {
+    logger.info(
+      `[${req.uuid}] -> Rate limit exceeded for signup for IP -> [IP = ${req.ip}]`
+    );
     return res.status(429).json({
       code: -1,
       msg: "You are being rate limited. Please try again later.",
@@ -48,8 +54,10 @@ export const emailLinkRateLimiter = rateLimit({
   limit: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: function (_req, res) {
-    logger.info("Rate limit exceeded for email link for IP " + _req.ip);
+  handler: function (req, res) {
+    logger.info(
+      `[${req.uuid}] -> Rate limit exceeded for email link for IP -> [IP = ${req.ip}]`
+    );
     return res.status(429).json({
       code: -1,
       msg: "You are being rate limited. Please try again later.",
@@ -62,8 +70,10 @@ export const wildcardRateLimiter = rateLimit({
   limit: 1,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: function (_req, res) {
-    logger.info("Rate limit exceeded for wildcard for IP " + _req.ip);
+  handler: function (req, res) {
+    logger.info(
+      `[${req.uuid}] -> Rate limit exceeded for wildcard for IP -> [IP = ${req.ip}]`
+    );
     return res.status(429).json({
       code: -1,
       msg: "You are being rate limited. Please try again later.",

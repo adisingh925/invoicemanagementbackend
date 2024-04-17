@@ -22,36 +22,50 @@ router.post(
   ],
   async (req, res) => {
     try {
-      logger.info("Validating signup request");
+      logger.info(
+        `[${req.uuid}] -> Validating signup request -> [email = ${
+          req.body.email
+        }, password = ${req.body.password ? "******" : ""}]`
+      );
 
       const result = validationResult(req);
 
       if (!result.isEmpty()) {
-        logger.warn("Validation failed, Returning response");
+        logger.warn(
+          `[${
+            req.uuid
+          }] -> Validation failed, Returning response -> ${JSON.stringify(
+            result.array()
+          )}`
+        );
         return res.status(400).json({ errors: result.array(), code: -1 });
       }
 
       logger.info(
-        "Signup request validated successfully, Fetching user details"
+        `[${req.uuid}] -> Signup request validated successfully, Fetching user details`
       );
 
       let user = await getUser(req.body.email);
 
       if (user != -1) {
-        logger.info("User already exists, Returning response");
+        logger.info(
+          `[${req.uuid}] -> User already exists, Returning response -> [userId = ${user.client_id}]`
+        );
         return res.status(400).json({
           msg: "Sorry!, A user with this email already exists!",
           code: -1,
         });
       }
 
-      logger.info("User not found, Creating user");
+      logger.info(`[${req.uuid}] -> User not found, Creating user`);
 
       const salt = await genSalt(10);
       const securePassword = await hash(req.body.password, salt);
       let clientId = await createUser(req.body.email, securePassword);
 
-      logger.info("User created successfully, Generating token");
+      logger.info(
+        `[${req.uuid}] -> User created successfully, Generating token -> [userId = ${clientId}]`
+      );
 
       const tokenPayload = {
         id: clientId,
@@ -61,7 +75,9 @@ router.post(
         expiresIn: process.env.TOKEN_EXPIRE_TIME,
       });
 
-      logger.info("Token generated successfully, Returning response");
+      logger.info(
+        `[${req.uuid}] -> Token generated successfully, Returning response -> [token = ${authtoken}]`
+      );
 
       return res.status(201).json({
         msg: `Hello ${req.body.email}, Your account is created successfully!`,
@@ -69,7 +85,7 @@ router.post(
         code: 1,
       });
     } catch (error) {
-      logger.error(error);
+      logger.error(`[${req.uuid}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }

@@ -19,6 +19,7 @@ import resetPasswordLink from "./routes/resetPasswordLink.js";
 import "./cron/cron.js";
 import morganMiddleware from "./logging/morgan.js";
 import logger from "./logging/winston.js";
+import { v4 as uuidv4 } from "uuid";
 
 const app = express();
 app.use(helmet());
@@ -38,6 +39,12 @@ const httpsServer = _createServer(
 app.use(cors());
 app.use(checkBusy);
 app.use(json({ limit: "1mb" }));
+
+// Middleware to add UUID to each request
+app.use((req, _res, next) => {
+  req.uuid = uuidv4(); // Generate UUID and attach it to the request object
+  next();
+});
 
 //All routes
 app.use("/", ping);

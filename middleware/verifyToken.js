@@ -5,25 +5,27 @@ import logger from "../logging/winston";
 dotenv.config();
 
 const verifytoken = (req, res, next) => {
-  logger.info("Verifying JWT token");
+  logger.info(`[${req.uuid}] -> Verifying JWT token`);
 
   try {
     const token = req.header("Authorization");
     if (!token) {
-      logger.info("No token found");
+      logger.info(`[${req.uuid}] -> No token found`);
       return res
         .status(401)
         .json({ msg: "Please authenticate using a valid token!", code: -2 });
     }
 
-    logger.info("Token found, verifying token");
+    logger.info(
+      `[${req.uuid} -> Token found, verifying token -> [token = ${token}]`
+    );
     const verify = _verify(token, process.env.JWT_SECRET);
 
-    logger.info("Token verified successfully");
+    logger.info(`[${req.uuid}] -> Token verified successfully`);
     req.id = verify.id;
     next();
   } catch (error) {
-    logger.error(error);
+    logger.error(`[${req.uuid}] -> ${error}`);
     return res
       .status(401)
       .json({ msg: "Please authenticate using a valid token!", code: -2 });
