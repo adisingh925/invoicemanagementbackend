@@ -4,7 +4,7 @@ import logger from "../logging/winston.js";
 const checkBusy = (req, res, next) => {
   try {
     if (toobusy()) {
-      logger.warn(`${req.uuid} -> Server too busy, try again later!`);
+      logger.warn(`[${req.uuid} <> ${req.ip}] -> Server too busy, try again later!`);
 
       return res
         .status(503)
@@ -13,7 +13,7 @@ const checkBusy = (req, res, next) => {
 
     next();
   } catch (error) {
-    logger.error(req.uuid + " -> " + error);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
     return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
   }
 };

@@ -23,7 +23,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid}] -> Validating signup request -> [email = ${
+        `[${req.uuid} <> ${req.ip}] -> Validating signup request -> [email = ${
           req.body.email
         }, password = ${req.body.password ? "******" : ""}]`
       );
@@ -42,14 +42,14 @@ router.post(
       }
 
       logger.info(
-        `[${req.uuid}] -> Signup request validated successfully, Fetching user details`
+        `[${req.uuid} <> ${req.ip}] -> Signup request validated successfully, Fetching user details`
       );
 
       let user = await getUser(req.body.email);
 
       if (user != -1) {
         logger.info(
-          `[${req.uuid}] -> User already exists, Returning response -> [userId = ${user.client_id}]`
+          `[${req.uuid} <> ${req.ip}] -> User already exists, Returning response -> [userId = ${user.client_id}]`
         );
         return res.status(400).json({
           msg: "Sorry!, A user with this email already exists!",
@@ -57,14 +57,14 @@ router.post(
         });
       }
 
-      logger.info(`[${req.uuid}] -> User not found, Creating user`);
+      logger.info(`[${req.uuid} <> ${req.ip}] -> User not found, Creating user`);
 
       const salt = await genSalt(10);
       const securePassword = await hash(req.body.password, salt);
       let clientId = await createUser(req.body.email, securePassword);
 
       logger.info(
-        `[${req.uuid}] -> User created successfully, Generating token -> [userId = ${clientId}]`
+        `[${req.uuid} <> ${req.ip}] -> User created successfully, Generating token -> [userId = ${clientId}]`
       );
 
       const tokenPayload = {
@@ -76,7 +76,7 @@ router.post(
       });
 
       logger.info(
-        `[${req.uuid}] -> Token generated successfully, Returning response -> [token = ${authtoken}]`
+        `[${req.uuid} <> ${req.ip}] -> Token generated successfully, Returning response -> [token = ${authtoken}]`
       );
 
       return res.status(201).json({
@@ -85,7 +85,7 @@ router.post(
         code: 1,
       });
     } catch (error) {
-      logger.error(`[${req.uuid}] -> ${error}`);
+      logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }

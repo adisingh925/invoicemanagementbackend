@@ -8,7 +8,7 @@ export const pingRateLimiter = rateLimit({
   legacyHeaders: false,
   handler: function (req, res) {
     logger.info(
-      `[${req.uuid}] -> Ping rate limit exceeded for ping for IP -> [IP = ${req.ip}]`
+      `[${req.uuid} <> ${req.ip}] -> Ping rate limit exceeded for ping for IP -> [IP = ${req.ip}]`
     );
     return res.status(429).json({
       code: -1,
@@ -24,7 +24,7 @@ export const loginRateLimiter = rateLimit({
   legacyHeaders: false,
   handler: function (req, res) {
     logger.info(
-      `[${req.uuid}] -> Rate limit exceeded for login for IP -> [IP = ${req.ip}]`
+      `[${req.uuid} <> ${req.ip}] -> Rate limit exceeded for login for IP -> [IP = ${req.ip}]`
     );
     return res.status(429).json({
       code: -1,
@@ -40,7 +40,7 @@ export const signupRateLimiter = rateLimit({
   legacyHeaders: false,
   handler: function (req, res) {
     logger.info(
-      `[${req.uuid}] -> Rate limit exceeded for signup for IP -> [IP = ${req.ip}]`
+      `[${req.uuid} <> ${req.ip}] -> Rate limit exceeded for signup for IP -> [IP = ${req.ip}]`
     );
     return res.status(429).json({
       code: -1,
@@ -56,7 +56,7 @@ export const emailLinkRateLimiter = rateLimit({
   legacyHeaders: false,
   handler: function (req, res) {
     logger.info(
-      `[${req.uuid}] -> Rate limit exceeded for email link for IP -> [IP = ${req.ip}]`
+      `[${req.uuid} <> ${req.ip}] -> Rate limit exceeded for email link for IP -> [IP = ${req.ip}]`
     );
     return res.status(429).json({
       code: -1,
@@ -72,7 +72,7 @@ export const wildcardRateLimiter = rateLimit({
   legacyHeaders: false,
   handler: function (req, res) {
     logger.info(
-      `[${req.uuid}] -> Rate limit exceeded for wildcard for IP -> [IP = ${req.ip}]`
+      `[${req.uuid} <> ${req.ip}] -> Rate limit exceeded for wildcard for IP -> [IP = ${req.ip}]`
     );
     return res.status(429).json({
       code: -1,

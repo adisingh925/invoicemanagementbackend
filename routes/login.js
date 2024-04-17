@@ -26,7 +26,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid}] -> Validating login request -> [email = ${
+        `[${req.uuid} <> ${req.ip}] -> Validating login request -> [email = ${
           req.body.email
         }, password = ${req.body.password ? "****" : ""}]`
       );
@@ -44,7 +44,7 @@ router.post(
       }
 
       logger.info(
-        `[${req.uuid}] -> Login request validated successfully, Fetching user details`
+        `[${req.uuid} <> ${req.ip}] -> Login request validated successfully, Fetching user details`
       );
 
       const { email, password } = req.body;
@@ -52,22 +52,22 @@ router.post(
       let user = await getUser(email);
 
       if (user == -1) {
-        logger.info(`[${req.uuid}] -> User not found, Returning response`);
+        logger.info(`[${req.uuid} <> ${req.ip}] -> User not found, Returning response`);
         return res.status(400).json({ msg: "User Not Exists!", code: -1 });
       }
 
       logger.info(
-        `[${req.uuid}] -> User found, comparing password -> [userId = ${user.client_id}]`
+        `[${req.uuid} <> ${req.ip}] -> User found, comparing password -> [userId = ${user.client_id}]`
       );
 
       const passwordCompare = await compare(password, user.password);
 
       if (!passwordCompare) {
-        logger.info(`[${req.uuid}] -> Password mismatch, Returning response`);
+        logger.info(`[${req.uuid} <> ${req.ip}] -> Password mismatch, Returning response`);
         return res.status(400).json({ msg: "Invalid Credentials!", code: -1 });
       }
 
-      logger.info(`[${req.uuid}] -> Password matched, generating token`);
+      logger.info(`[${req.uuid} <> ${req.ip}] -> Password matched, generating token`);
 
       const tokenPayload = {
         id: user.client_id,
@@ -78,7 +78,7 @@ router.post(
       });
 
       logger.info(
-        `[${req.uuid}] -> Token generated successfully, Returning response -> [token = ${authtoken}]`
+        `[${req.uuid} <> ${req.ip}] -> Token generated successfully, Returning response -> [token = ${authtoken}]`
       );
 
       return res.status(200).json({
@@ -87,7 +87,7 @@ router.post(
         code: 1,
       });
     } catch (error) {
-      logger.error(`[${req.uuid}] -> ${error}`);
+      logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }

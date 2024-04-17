@@ -43,6 +43,19 @@ app.use(json({ limit: "1mb" }));
 // Middleware to add UUID to each request
 app.use((req, _res, next) => {
   req.uuid = uuidv4(); // Generate UUID and attach it to the request object
+  logger.info(
+    `[${req.uuid} <> ${req.ip}] -> generated UUID for new request -> [IP = ${req.ip}]`
+  );
+  next();
+});
+
+// Middleware to upgrade insecure requests to secure requests
+app.use((req, res, next) => {
+  if (!req.secure) {
+    logger.warn(`[${req.uuid} <> ${req.ip}] -> Redirecting insecure request!`);
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+
   next();
 });
 
@@ -57,9 +70,9 @@ app.use("/", wildCard);
 /**
  * Global error handler
  */
-app.use((error, _req, res, next) => {
+app.use((error, req, res, next) => {
   if (error) {
-    logger.error(error);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> error`);
     return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
   next();

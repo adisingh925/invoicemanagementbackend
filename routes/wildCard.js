@@ -8,10 +8,10 @@ const router = express.Router();
  */
 router.all("*", wildcardRateLimiter, (req, res) => {
   try {
-    logger.info(`[${req.uuid}] -> Endpoint not found, Returning response`);
+    logger.info(`[${req.uuid} <> ${req.ip}] -> Endpoint not found, Returning response`);
     return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
   } catch (error) {
-    logger.error(`[${req.uuid}] -> ${error}`);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
     return res.status(500).json({ code: -1, msg: "Internal Server Error!" });
   }
 });

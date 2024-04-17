@@ -14,18 +14,18 @@ dotenv.config();
 router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
   try {
     logger.info(
-      `[${req.uuid}] -> Password Reset Link Requested, verifying user -> [email = ${req.params.email}]`
+      `[${req.uuid} <> ${req.ip}] -> Password Reset Link Requested, verifying user -> [email = ${req.params.email}]`
     );
 
     let user = await getUser(req.params.email);
 
     if (user === -1) {
-      logger.info(`[${req.uuid}] -> User not found, Returning response`);
+      logger.info(`[${req.uuid} <> ${req.ip}] -> User not found, Returning response`);
       return res.status(200).json({ code: 1, msg: "Reset link sent!" });
     }
 
     logger.info(
-      `[${req.uuid}] -> User found, Generating password reset token -> [userId = ${user.client_id}]`
+      `[${req.uuid} <> ${req.ip}] -> User found, Generating password reset token -> [userId = ${user.client_id}]`
     );
 
     let payload = {
@@ -37,7 +37,7 @@ router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
     });
 
     logger.info(
-      `[${req.uuid}] -> Token generated, Sending reset link -> [password reset link = ${process.env.SERVER_URL}/auth/resetpassword/${token}]`
+      `[${req.uuid} <> ${req.ip}] -> Token generated, Sending reset link -> [password reset link = ${process.env.SERVER_URL}/auth/resetpassword/${token}]`
     );
 
     sendEmail(
@@ -55,10 +55,10 @@ router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
       "Blivix Support"
     );
 
-    logger.info(`[${req.uuid}] -> Reset link sent!, Returning response`);
+    logger.info(`[${req.uuid} <> ${req.ip}] -> Reset link sent!, Returning response`);
     return res.status(200).json({ code: 1, msg: "Reset link sent!" });
   } catch (error) {
-    logger.error(`[${req.uuid}] -> ${error}`);
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
     return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
 });

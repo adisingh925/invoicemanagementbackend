@@ -17,14 +17,14 @@ router.get("/resetPassword/:token", verifyPasswordResetToken, (req, res) => {
   try {
     if (process.env.ENVIRONMENT === "development") {
       logger.info(
-        `[${req.uuid}] -> Redirecting to development reset password page -> [password reset url = ${process.env.WEBSITE_URL}/resetpassword/${req.params.token}, password reset token = ${req.params.token}, userId = ${req.id}]`
+        `[${req.uuid} <> ${req.ip}] -> Redirecting to development reset password page -> [password reset url = ${process.env.WEBSITE_URL}/resetpassword/${req.params.token}, password reset token = ${req.params.token}, userId = ${req.id}]`
       );
       res.redirect(
         `${process.env.WEBSITE_URL}/resetpassword/${req.params.token}`
       );
     } else {
       logger.info(
-        `[${req.uuid}] -> Redirecting to production reset password page -> [password reset url = ${process.env.WEBSITE_URL}/resetpassword/${req.params.token}, password reset token = ${req.params.token}, userId = ${req.id}]`
+        `[${req.uuid} <> ${req.ip}] -> Redirecting to production reset password page -> [password reset url = ${process.env.WEBSITE_URL}/resetpassword/${req.params.token}, password reset token = ${req.params.token}, userId = ${req.id}]`
       );
       res.redirect(
         `${process.env.WEBSITE_URL}/resetpassword/${req.params.token}`
@@ -51,7 +51,7 @@ router.post(
 
       if (response === -1) {
         logger.info(
-          `[${req.uuid}] -> Password Reset Failed!, Returning response`
+          `[${req.uuid} <> ${req.ip}] -> Password Reset Failed!, Returning response`
         );
         return res
           .status(400)
@@ -59,13 +59,13 @@ router.post(
       }
 
       logger.info(
-        `[${req.uuid}] -> Password Reset Successful!, Returning response`
+        `[${req.uuid} <> ${req.ip}] -> Password Reset Successful!, Returning response`
       );
       return res
         .status(200)
         .json({ msg: "Password Reset Successful!", code: 1 });
     } catch (error) {
-      logger.error(`[${req.uuid}] -> ${error}`);
+      logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
     }
   }
