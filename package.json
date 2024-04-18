@@ -25,6 +25,7 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.12",
     "toobusy-js": "^0.5.1",
+    "unirest": "^0.6.0",
     "uuid": "^9.0.1",
     "winston": "^3.13.0"
   }
