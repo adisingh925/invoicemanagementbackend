@@ -36,7 +36,7 @@ const verifyPasswordResetToken = async (req, res, next) => {
     logger.info(
       `[${req.uuid} <> ${req.ip}] -> Token verified, Checking password update time`
     );
-    let passwordUpdateTime = await checkPasswordUpdateTime(verify.id);
+    let passwordUpdateTime = await checkPasswordUpdateTime(verify.id, req.uuid, req.ip);
 
     if (passwordUpdateTime === -1) {
       logger.info(

@@ -47,7 +47,7 @@ router.post(
 
       const { email, password } = req.body;
 
-      let user = await getUser(req);
+      let user = await getUser(email, req.uuid, req.ip);
 
       if (user == -1) {
         logger.info(`[${req.uuid} <> ${req.ip}] -> User not found, Returning response`);

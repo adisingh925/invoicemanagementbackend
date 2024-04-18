@@ -43,7 +43,7 @@ router.post(
         `[${req.uuid} <> ${req.ip}] -> Signup request validated successfully, Fetching user details`
       );
 
-      let user = await getUser(req);
+      let user = await getUser(req.body.email, req.uuid, req.ip);
 
       if (user != -1) {
         logger.info(
@@ -59,7 +59,7 @@ router.post(
 
       const salt = await genSalt(10);
       const securePassword = await hash(req.body.password, salt);
-      let clientId = await createUser(req.body.email, securePassword, req);
+      let clientId = await createUser(req.body.email, securePassword, req.uuid, req.ip);
 
       logger.info(
         `[${req.uuid} <> ${req.ip}] -> User created successfully, Generating token -> [userId = ${clientId}]`

@@ -3,7 +3,6 @@ const router = Router();
 import verifyPasswordResetToken from "../middleware/verifyPasswordResetToken.js";
 import jwt from "jsonwebtoken";
 import { updatePassword } from "../database/db.js";
-const { sign } = jwt;
 import pkg from "bcryptjs";
 const { genSalt, hash } = pkg;
 import dotenv from "dotenv";
@@ -42,12 +41,12 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Updating password -> [userId = ${req.id}], token = ${req.params.token}`
+        `[${req.uuid} <> ${req.ip}] -> Updating password -> [userId = ${req.id}, token = ${req.params.token}]`
       );
 
       const salt = await genSalt(10);
       const securePassword = await hash(req.body.password, salt);
-      let response = updatePassword(req.id, securePassword);
+      let response = updatePassword(req.id, securePassword, req.uuid, req.ip);
 
       if (response === -1) {
         logger.info(

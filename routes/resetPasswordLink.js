@@ -17,7 +17,7 @@ router.get("/sendResetLink/:email", emailLinkRateLimiter, async (req, res) => {
       `[${req.uuid} <> ${req.ip}] -> Password Reset Link Requested, verifying user -> [email = ${req.params.email}]`
     );
 
-    let user = await getUser(req);
+    let user = await getUser(req.params.email, req.uuid, req.ip);
 
     if (user === -1) {
       logger.info(
