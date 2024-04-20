@@ -20,7 +20,6 @@ import "./cron/cron.js";
 import morganMiddleware from "./logging/morgan.js";
 import logger from "./logging/winston.js";
 import { v4 as uuidv4 } from "uuid";
-import postSupportDataToGoogleChat from "./logging/webhook.js";
 
 const app = express();
 app.use(helmet());
