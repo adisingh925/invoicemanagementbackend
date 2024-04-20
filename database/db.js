@@ -180,3 +180,24 @@ export const updateGym = async (
     );
   });
 };
+
+export const readGym = async (client_id, uuid, ip) => {
+  logger.info(`[${uuid} <> ${ip}] -> Reading gym entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `SELECT gym_id, gym_name, gym_address, gym_phone_number, gym_email FROM gym WHERE client_id = ?`;
+
+    connection.query(query, [client_id], function (err, result) {
+      if (err) {
+        logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+        reject(err);
+      } else {
+        logger.info(
+          `[${uuid} <> ${ip}] -> Gym read response from DB -> [result = ${JSON.stringify(
+            result
+          )}]`
+        );
+        resolve(result);
+      }
+    });
+  });
+};

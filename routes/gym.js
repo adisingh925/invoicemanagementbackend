@@ -3,7 +3,7 @@ const router = Router();
 import dotenv from "dotenv";
 import logger from "../logging/winston.js";
 import { validationResult, body } from "express-validator";
-import { insertGym, updateGym } from "../database/db.js";
+import { insertGym, readGym, updateGym } from "../database/db.js";
 import verifytoken from "../middleware/verifyToken.js";
 dotenv.config();
 
@@ -119,5 +119,27 @@ router.post(
     }
   }
 );
+
+/**
+ * @post /gym
+ */
+router.post("/read/gym", verifytoken, async (req, res) => {
+  try {
+    logger.info(`[${req.uuid} <> ${req.ip}] -> Read Gym Request Received`);
+
+    let gymData = await readGym(req.id, req.uuid, req.ip);
+
+    logger.info(
+      `[${req.uuid} <> ${req.ip}] -> Gym Data Successfully Fetched, Returning Response!`
+    );
+
+    return res
+      .status(200)
+      .json({ msg: "Gym Data Fetched Successfully!", data: gymData, code: 1 });
+  } catch (error) {
+    logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
+    return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
+  }
+});
 
 export default router;
