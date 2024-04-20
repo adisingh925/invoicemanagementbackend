@@ -135,6 +135,11 @@ export const insertGym = async (
           logger.error(`[${uuid} <> ${ip}] -> ${err}`);
           reject(err);
         } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Gym insert response from DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
           resolve(result.insertId);
         }
       }
@@ -165,7 +170,7 @@ export const updateGym = async (
           reject(err);
         } else {
           logger.info(
-            `[${uuid} <> ${ip}] -> Gym updated successfully -> [result = ${JSON.stringify(
+            `[${uuid} <> ${ip}] -> Gym update response from DB -> [result = ${JSON.stringify(
               result
             )}]`
           );

@@ -46,9 +46,10 @@ router.post(
 
       await insertGym(name, address, phone, email, req.id, req.uuid, req.ip);
 
-      return res
-        .status(200)
-        .json({ msg: "Gym Inserted Successfully!", code: 1 });
+      return res.status(200).json({
+        msg: "Gym Inserted Successfully, Returning response!",
+        code: 1,
+      });
     } catch (error) {
       logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
@@ -61,6 +62,7 @@ router.post(
  */
 router.post(
   "/update/gym",
+  verifytoken,
   [
     body("id", "Id is required").trim().notEmpty().escape(),
     body("name", "Name is required").trim().notEmpty().escape(),
@@ -102,6 +104,10 @@ router.post(
         req.id,
         req.uuid,
         req.ip
+      );
+
+      logger.info(
+        `[${req.uuid} <> ${req.ip}] -> Gym Updated Successfully, Returning response!`
       );
 
       return res
