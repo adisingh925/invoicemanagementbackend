@@ -201,3 +201,83 @@ export const readGym = async (client_id, uuid, ip) => {
     });
   });
 };
+
+export const insertMembership = async (
+  membership_name,
+  membership_price,
+  membership_duration,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Creating new membership entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `INSERT INTO membership (membership_name, membership_price, membership_duration_months, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
+
+    connection.query(
+      query,
+      [
+        membership_name,
+        membership_price,
+        membership_duration,
+        client_id,
+        gym_id,
+      ],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> membership insert response from DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const updateMembership = async (
+  membership_id,
+  membership_name,
+  membership_price,
+  membership_duration,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Updating membership entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ?`;
+
+    connection.query(
+      query,
+      [
+        membership_name,
+        membership_price,
+        membership_duration,
+        gym_id,
+        membership_id,
+        client_id,
+      ],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Membership update response from DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};

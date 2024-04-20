@@ -22,7 +22,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Insert Gym request received, Validating body`
+        `[${req.uuid} <> ${req.ip}] -> Insert Gym Request Received, Validating Body`
       );
 
       const result = validationResult(req);
@@ -31,7 +31,7 @@ router.post(
         logger.info(
           `[${req.uuid} <> ${
             req.ip
-          }] -> Validation failed, Returning response -> ${JSON.stringify(
+          }] -> Validation Failed, Returning Response -> ${JSON.stringify(
             result.array()
           )}`
         );
@@ -41,13 +41,13 @@ router.post(
       const { name, address, phone, email } = req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting data -> [name = ${name}, address = ${address}, phone = ${phone}, email = ${email}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [name = ${name}, address = ${address}, phone = ${phone}, email = ${email}]`
       );
 
       await insertGym(name, address, phone, email, req.id, req.uuid, req.ip);
 
       return res.status(200).json({
-        msg: "Gym Inserted Successfully, Returning response!",
+        msg: "Gym Inserted Successfully, Returning Response!",
         code: 1,
       });
     } catch (error) {
@@ -73,7 +73,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Update Gym request received, Validating body`
+        `[${req.uuid} <> ${req.ip}] -> Update Gym request received, Validating Body`
       );
 
       const result = validationResult(req);
@@ -82,7 +82,7 @@ router.post(
         logger.info(
           `[${req.uuid} <> ${
             req.ip
-          }] -> Validation failed, Returning response -> ${JSON.stringify(
+          }] -> Validation Failed, Returning Response -> ${JSON.stringify(
             result.array()
           )}`
         );
@@ -92,7 +92,7 @@ router.post(
       const { id, name, address, phone, email } = req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating data -> [name = ${name}, address = ${address}, phone = ${phone}, email = ${email}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [name = ${name}, address = ${address}, phone = ${phone}, email = ${email}]`
       );
 
       await updateGym(
@@ -107,7 +107,7 @@ router.post(
       );
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Gym Updated Successfully, Returning response!`
+        `[${req.uuid} <> ${req.ip}] -> Gym Updated Successfully, Returning Response!`
       );
 
       return res
