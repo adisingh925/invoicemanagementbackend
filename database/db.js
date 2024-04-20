@@ -113,3 +113,65 @@ export const updatePassword = async (userId, password, uuid, ip) => {
     );
   });
 };
+
+export const insertGym = async (
+  gym_name,
+  gym_Address,
+  gym_phone_number,
+  gym_email,
+  client_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Creating new gym entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `INSERT INTO gym (gym_name, gym_address, gym_phone_number, gym_email, client_id) VALUES (?, ?, ?, ?, ?)`;
+
+    connection.query(
+      query,
+      [gym_name, gym_Address, gym_phone_number, gym_email, client_id],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const updateGym = async (
+  gym_name,
+  gym_Address,
+  gym_phone_number,
+  gym_email,
+  gym_id,
+  client_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Updating gym entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `UPDATE gym SET gym_name = ?, gym_address = ?, gym_phone_number = ?, gym_email = ? WHERE gym_id = ? and client_id = ?`;
+
+    connection.query(
+      query,
+      [gym_name, gym_Address, gym_phone_number, gym_email, gym_id, client_id],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Gym updated successfully -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};

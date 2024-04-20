@@ -16,6 +16,7 @@ import signup from "./routes/signup.js";
 import wildCard from "./routes/wildCard.js";
 import resetPassword from "./routes/resetPassword.js";
 import resetPasswordLink from "./routes/resetPasswordLink.js";
+import gym from "./routes/gym.js";
 import "./cron/cron.js";
 import morganMiddleware from "./logging/morgan.js";
 import logger from "./logging/winston.js";
@@ -65,6 +66,7 @@ app.use("/auth", login);
 app.use("/auth", signup);
 app.use("/auth", resetPassword);
 app.use("/auth", resetPasswordLink);
+app.use("/", gym);
 app.use("/", wildCard);
 
 /**

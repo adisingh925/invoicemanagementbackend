@@ -1,7 +1,7 @@
 import pkg from "jsonwebtoken";
 const { verify: _verify } = pkg;
 import dotenv from "dotenv";
-import logger from "../logging/winston";
+import logger from "../logging/winston.js";
 dotenv.config();
 
 const verifytoken = (req, res, next) => {
