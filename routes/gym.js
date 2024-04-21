@@ -123,7 +123,7 @@ router.post(
 /**
  * @post /gym
  */
-router.post("/read/gym", verifytoken, async (req, res) => {
+router.get("/read/gym", verifytoken, async (req, res) => {
   try {
     logger.info(`[${req.uuid} <> ${req.ip}] -> Read Gym Request Received`);
 
