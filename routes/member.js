@@ -5,13 +5,9 @@ import logger from "../logging/winston.js";
 import { validationResult, body, param } from "express-validator";
 import {
   deleteMember,
-  deleteMembership,
   insertMember,
-  insertMembership,
   readMember,
-  readMembership,
   updateMember,
-  updateMembership,
 } from "../database/db.js";
 import verifytoken from "../middleware/verifyToken.js";
 dotenv.config();
