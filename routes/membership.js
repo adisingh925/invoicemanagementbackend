@@ -2,12 +2,11 @@ import { Router } from "express";
 const router = Router();
 import dotenv from "dotenv";
 import logger from "../logging/winston.js";
-import { validationResult, body } from "express-validator";
+import { validationResult, body, param } from "express-validator";
 import {
-  insertGym,
+  deleteMembership,
   insertMembership,
-  readGym,
-  updateGym,
+  readMembership,
   updateMembership,
 } from "../database/db.js";
 import verifytoken from "../middleware/verifyToken.js";
@@ -17,16 +16,22 @@ dotenv.config();
  * @post /membership
  */
 router.post(
-  "/insert/membership",
+  "/insert/membership/:gymId",
   verifytoken,
   [
-    body("gym_id", "Gym Id is required").trim().notEmpty().escape(),
-    body("name", "Name is required").trim().notEmpty().escape(),
-    body("price", "Price must be a number greater than or equal to 0")
+    param("gymId", "Invalid gymId").isInt().toInt(),
+    body("membership_name", "Name is required").trim().notEmpty().escape(),
+    body(
+      "membership_price",
+      "Price must be a number greater than or equal to 0"
+    )
       .trim()
       .isFloat({ min: 0 })
       .escape(),
-    body("duration", "Duration must be a number between 0 and 12")
+    body(
+      "membership_duration_months",
+      "Duration must be a number between 0 and 12"
+    )
       .trim()
       .isInt({ min: 0, max: 12 })
       .escape(),
@@ -50,18 +55,19 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const { gym_id, name, price, duration } = req.body;
+      const { membership_name, membership_price, membership_duration_months } =
+        req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [name = ${name}, price = ${price}, duration = ${duration}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [gym_id = ${req.params.gymId}, membership_name = ${membership_name}, membership_price = ${membership_price}, membership_duration_months = ${membership_duration_months}]`
       );
 
       await insertMembership(
-        name,
-        price,
-        duration,
+        membership_name,
+        membership_price,
+        membership_duration_months,
         req.id,
-        gym_id,
+        req.params.gymId,
         req.uuid,
         req.ip
       );
@@ -81,20 +87,26 @@ router.post(
  * @post /membership
  */
 router.post(
-  "/update/membership",
+  "/update/membership/:gymId",
   verifytoken,
   [
-    body("gym_id", "Gym Id is required").trim().notEmpty().escape(),
+    param("gymId", "Invalid gymId").isInt().toInt(),
     body("membership_id", "Membership Id is required")
       .trim()
       .notEmpty()
       .escape(),
-    body("name", "Name is required").trim().notEmpty().escape(),
-    body("price", "Price must be a number greater than or equal to 0")
+    body("membership_name", "Name is required").trim().notEmpty().escape(),
+    body(
+      "membership_price",
+      "Price must be a number greater than or equal to 0"
+    )
       .trim()
       .isFloat({ min: 0 })
       .escape(),
-    body("duration", "Duration must be a number between 0 and 12")
+    body(
+      "membership_duration_months",
+      "Duration must be a number between 0 and 12"
+    )
       .trim()
       .isInt({ min: 0, max: 12 })
       .escape(),
@@ -118,19 +130,24 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const { gym_id, membership_id, name, price, duration } = req.body;
+      const {
+        membership_id,
+        membership_name,
+        membership_price,
+        membership_duration_months,
+      } = req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${gym_id}, membership_id = ${membership_id}, name = ${name}, price = ${price}, duration = ${duration}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, membership_id = ${membership_id}, name = ${membership_name}, price = ${membership_price}, duration = ${membership_duration_months}]`
       );
 
       await updateMembership(
         membership_id,
-        name,
-        price,
-        duration,
+        membership_name,
+        membership_price,
+        membership_duration_months,
         req.id,
-        gym_id,
+        req.params.gymId,
         req.uuid,
         req.ip
       );
@@ -152,13 +169,18 @@ router.post(
 /**
  * @post /membership
  */
-router.post("/read/membership", verifytoken, async (req, res) => {
+router.get("/read/membership/:gymId", verifytoken, async (req, res) => {
   try {
     logger.info(
       `[${req.uuid} <> ${req.ip}] -> Read Membership Request Received`
     );
 
-    let gymData = await readGym(req.id, req.uuid, req.ip);
+    let gymData = await readMembership(
+      req.params.gymId,
+      req.id,
+      req.uuid,
+      req.ip
+    );
 
     logger.info(
       `[${req.uuid} <> ${req.ip}] -> Membership Data Successfully Fetched, Returning Response!`
@@ -174,5 +196,49 @@ router.post("/read/membership", verifytoken, async (req, res) => {
     return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
   }
 });
+
+/**
+ * @post /membership
+ */
+router.post(
+  "/delete/membership/:gymId",
+  [
+    param("gymId", "Invalid gymId").isInt().toInt(),
+    body("membership_ids")
+      .isArray()
+      .withMessage("Membership IDs must be an array"),
+    body("membership_ids.*")
+      .isInt()
+      .withMessage("Each membership ID must be an integer"),
+  ],
+  verifytoken,
+  async (req, res) => {
+    try {
+      logger.info(
+        `[${req.uuid} <> ${req.ip}] -> Delete Memberships Request Received`
+      );
+
+      await deleteMembership(
+        req.body.membership_ids,
+        req.params.gymId,
+        req.id,
+        req.uuid,
+        req.ip
+      );
+
+      logger.info(
+        `[${req.uuid} <> ${req.ip}] -> Membership Data Successfully Deleted, Returning Response!`
+      );
+
+      return res.status(200).json({
+        msg: "Membership Data Deleted Successfully!",
+        code: 1,
+      });
+    } catch (error) {
+      logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
+      return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
+    }
+  }
+);
 
 export default router;

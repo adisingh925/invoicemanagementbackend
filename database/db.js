@@ -159,11 +159,19 @@ export const updateGym = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating gym entry in DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE gym SET gym_name = ?, gym_address = ?, gym_phone_number = ?, gym_email = ? WHERE gym_id = ? and client_id = ?`;
+    var query = `UPDATE gym SET gym_name = ?, gym_address = ?, gym_phone_number = ?, gym_email = ? WHERE gym_id = ? and client_id = ? and is_deleted = ?`;
 
     connection.query(
       query,
-      [gym_name, gym_Address, gym_phone_number, gym_email, gym_id, client_id],
+      [
+        gym_name,
+        gym_Address,
+        gym_phone_number,
+        gym_email,
+        gym_id,
+        client_id,
+        false,
+      ],
       function (err, result) {
         if (err) {
           logger.error(`[${uuid} <> ${ip}] -> ${err}`);
@@ -184,9 +192,9 @@ export const updateGym = async (
 export const readGym = async (client_id, uuid, ip) => {
   logger.info(`[${uuid} <> ${ip}] -> Reading gym entry in DB`);
   return new Promise((resolve, reject) => {
-    var query = `SELECT gym_id, gym_name, gym_address, gym_phone_number, gym_email FROM gym WHERE client_id = ?`;
+    var query = `SELECT gym_id, gym_name, gym_address, gym_phone_number, gym_email FROM gym WHERE client_id = ? and  is_deleted = ?`;
 
-    connection.query(query, [client_id], function (err, result) {
+    connection.query(query, [client_id, false], function (err, result) {
       if (err) {
         logger.error(`[${uuid} <> ${ip}] -> ${err}`);
         reject(err);
@@ -253,7 +261,7 @@ export const updateMembership = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating membership entry in DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ?`;
+    var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ? and is_deleted = ?`;
 
     connection.query(
       query,
@@ -264,6 +272,7 @@ export const updateMembership = async (
         gym_id,
         membership_id,
         client_id,
+        false,
       ],
       function (err, result) {
         if (err) {
@@ -279,5 +288,60 @@ export const updateMembership = async (
         }
       }
     );
+  });
+};
+
+export const readMembership = async (gym_id, client_id, uuid, ip) => {
+  logger.info(`[${uuid} <> ${ip}] -> Reading membership entry in DB`);
+  return new Promise((resolve, reject) => {
+    var query = `SELECT membership_id, membership_name, membership_price, membership_duration_months FROM membership WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+
+    connection.query(query, [client_id, gym_id, false], function (err, result) {
+      if (err) {
+        logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+        reject(err);
+      } else {
+        logger.info(
+          `[${uuid} <> ${ip}] -> Membership read response from DB -> [result = ${JSON.stringify(
+            result
+          )}]`
+        );
+        resolve(result);
+      }
+    });
+  });
+};
+
+export const deleteMembership = async (
+  membership_ids,
+  gym_id,
+  client_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Deleting membership entry in DB`);
+
+  return new Promise((resolve, reject) => {
+    for (let i = 0; i < membership_ids.length; i++) {
+      var query = `UPDATE membership SET is_deleted = ? WHERE client_id = ? and gym_id = ? and membership_id = ? and is_deleted = ?`;
+
+      connection.query(
+        query,
+        [true, client_id, gym_id, membership_ids[i], false],
+        function (err, result) {
+          if (err) {
+            logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+            reject(err);
+          } else {
+            logger.info(
+              `[${uuid} <> ${ip}] -> Membership delete response from DB -> [result = ${JSON.stringify(
+                result
+              )}]`
+            );
+            resolve(result);
+          }
+        }
+      );
+    }
   });
 };
