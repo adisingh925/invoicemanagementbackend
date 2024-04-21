@@ -1,6 +1,3 @@
-`client`CREATE DATABASE lndtraining;
-
-SELECT * FROM invoice_table;
 
 DROP TABLE CLIENT;
 
@@ -44,28 +41,17 @@ CREATE TABLE membership (
 
 DROP TABLE membership;
 
-DROP TABLE CLIENT;
-
-CREATE TABLE customer (
-    customer_id INT AUTO_INCREMENT PRIMARY KEY,
-    fk_client_id INT,
-    customer_name VARCHAR(255),
-    fileTypes VARCHAR(50),
-    parsing_data TEXT,
-    is_client BOOLEAN,
-    FOREIGN KEY (fk_client_id) REFERENCES CLIENT(client_id)
+CREATE TABLE manager (
+    manager_id INT AUTO_INCREMENT PRIMARY KEY,
+    manager_name VARCHAR(255) NOT NULL,
+    manager_phone_number VARCHAR(20) UNIQUE,
+    manager_email VARCHAR(255) UNIQUE,
+    client_id INT,
+    gym_id INT,
+    is_deleted BOOLEAN DEFAULT FALSE, 
+    insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES CLIENT(client_id),
+    FOREIGN KEY (gym_id) REFERENCES gym(gym_id)
 );
 
-CREATE TABLE invoice();
-
-DESC invoice_table;
-
-DROP TABLE 1_invoices;
-
-DROP TABLE customer;
-
-INSERT INTO invoice_table VALUES (19, "IN", 12, "test", "2008-11-11", 12, 0, 1, 12, "abc", 12);
-
-SHOW DATABASES;
-
-SELECT fileTypes FROM customer WHERE fk_client_id = 1;

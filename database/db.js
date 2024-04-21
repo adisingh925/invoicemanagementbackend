@@ -488,3 +488,150 @@ export const deleteManager = async (
     }
   });
 };
+
+/**
+ * Member Fucntions
+ */
+
+export const insertMember = async (
+  member_name,
+  member_email,
+  member_phone_number,
+  member_membership_type,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Creating New Member Entry In DB`);
+  return new Promise((resolve, reject) => {
+    var query = `INSERT INTO member (member_name,
+      member_email,
+      member_phone_number,
+      member_membership_type, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
+
+    connection.query(
+      query,
+      [
+        member_name,
+        member_email,
+        member_phone_number,
+        member_membership_type,
+        client_id,
+        gym_id,
+      ],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Member Insert Response From DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const updateMember = async (
+  member_id,
+  member_name,
+  member_email,
+  member_phone_number,
+  member_membership_type,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Updating Member Entry In DB`);
+  return new Promise((resolve, reject) => {
+    var query = `UPDATE member SET member_name = ?, member_phone_number = ?, member_email = ?, member_membership_type = ? WHERE gym_id = ? and member_id = ? and client_id = ? and is_deleted = ?`;
+
+    connection.query(
+      query,
+      [
+        member_name,
+        member_phone_number,
+        member_email,
+        member_membership_type,
+        gym_id,
+        member_id,
+        client_id,
+        false,
+      ],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Member Update Response From DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const readMember = async (gym_id, client_id, uuid, ip) => {
+  logger.info(`[${uuid} <> ${ip}] -> Reading Member Entry From DB`);
+  return new Promise((resolve, reject) => {
+    var query = `SELECT member_id,
+    member_name,
+    member_email,
+    member_phone_number,
+    member_membership_type FROM member WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+
+    connection.query(query, [client_id, gym_id, false], function (err, result) {
+      if (err) {
+        logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+        reject(err);
+      } else {
+        logger.info(
+          `[${uuid} <> ${ip}] -> Member Read Response From DB -> [result = ${JSON.stringify(
+            result
+          )}]`
+        );
+        resolve(result);
+      }
+    });
+  });
+};
+
+export const deleteMember = async (member_ids, gym_id, client_id, uuid, ip) => {
+  logger.info(
+    `[${uuid} <> ${ip}] -> Deleting Member Entry In DB by Iterating The Array -> [manager_ids = ${member_ids}]`
+  );
+
+  return new Promise((resolve, reject) => {
+    for (let i = 0; i < member_ids.length; i++) {
+      var query = `UPDATE member SET is_deleted = ? WHERE client_id = ? and gym_id = ? and member_id = ? and is_deleted = ?`;
+
+      connection.query(
+        query,
+        [true, client_id, gym_id, member_ids[i], false],
+        function (err, result) {
+          if (err) {
+            logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+            reject(err);
+          } else {
+            logger.info(
+              `[${uuid} <> ${ip}] -> Member Delete Response From DB -> [result = ${JSON.stringify(
+                result
+              )}]`
+            );
+            resolve(result);
+          }
+        }
+      );
+    }
+  });
+};

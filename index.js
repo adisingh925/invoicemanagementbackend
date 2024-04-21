@@ -19,6 +19,7 @@ import resetPasswordLink from "./routes/resetPasswordLink.js";
 import gym from "./routes/gym.js";
 import membership from "./routes/membership.js";
 import manager from "./routes/manager.js";
+import member from "./routes/member.js";
 import "./cron/cron.js";
 import morganMiddleware from "./logging/morgan.js";
 import logger from "./logging/winston.js";
@@ -71,6 +72,7 @@ app.use("/auth", resetPasswordLink);
 app.use("/", gym);
 app.use("/", membership);
 app.use("/", manager);
+app.use("/", member);
 app.use("/", wildCard);
 
 /**
