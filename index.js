@@ -50,16 +50,16 @@ app.use((req, _res, next) => {
 });
 
 // Middleware to upgrade insecure requests to secure requests
-app.use((req, res, next) => {
-  if (!req.secure) {
-    logger.warn(
-      `[${req.uuid} <> ${req.ip}] -> Redirecting insecure request! -> [URL = ${req.url}]`
-    );
-    return res.redirect(307, `https://${req.headers.host}${req.url}`);
-  }
+// app.use((req, res, next) => {
+//   if (!req.secure) {
+//     logger.warn(
+//       `[${req.uuid} <> ${req.ip}] -> Redirecting insecure request! -> [URL = ${req.url}]`
+//     );
+//     return res.redirect(307, `https://${req.headers.host}${req.url}`);
+//   }
 
-  next();
-});
+//   next();
+// });
 
 //All routes
 app.use("/", ping);

@@ -47,7 +47,7 @@ router.post(
       await insertGym(name, address, phone, email, req.id, req.uuid, req.ip);
 
       return res.status(200).json({
-        msg: "Gym Inserted Successfully, Returning Response!",
+        msg: "Gym Inserted Successfully!",
         code: 1,
       });
     } catch (error) {
