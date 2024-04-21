@@ -72,6 +72,10 @@ router.post(
         req.ip
       );
 
+      logger.info(
+        `[${req.uuid} <> ${req.ip}] -> Membership Inserted Successfully!, Returning Response`
+      );
+
       return res.status(200).json({
         msg: "Membership Inserted Successfully!",
         code: 1,
@@ -114,7 +118,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Update Membership request received, Validating Body`
+        `[${req.uuid} <> ${req.ip}] -> Update Membership Request Received, Validating Body`
       );
 
       const result = validationResult(req);
@@ -138,7 +142,7 @@ router.post(
       } = req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, membership_id = ${membership_id}, name = ${membership_name}, price = ${membership_price}, duration = ${membership_duration_months}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, membership_id = ${membership_id}, membership_name = ${membership_name}, membership_price = ${membership_price}, membership_duration_months = ${membership_duration_months}]`
       );
 
       await updateMembership(
@@ -172,7 +176,7 @@ router.post(
 router.get("/read/membership/:gymId", verifytoken, async (req, res) => {
   try {
     logger.info(
-      `[${req.uuid} <> ${req.ip}] -> Read Membership Request Received`
+      `[${req.uuid} <> ${req.ip}] -> Read Membership Request Received, Proceeding to Fetch Data!`
     );
 
     let gymData = await readMembership(
@@ -215,7 +219,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Delete Memberships Request Received`
+        `[${req.uuid} <> ${req.ip}] -> Delete Memberships Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, membership_ids = ${req.body.membership_ids}]`
       );
 
       await deleteMembership(

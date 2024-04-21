@@ -219,7 +219,7 @@ export const insertMembership = async (
   uuid,
   ip
 ) => {
-  logger.info(`[${uuid} <> ${ip}] -> Creating new membership entry in DB`);
+  logger.info(`[${uuid} <> ${ip}] -> Creating New Nembership Entry In DB`);
   return new Promise((resolve, reject) => {
     var query = `INSERT INTO membership (membership_name, membership_price, membership_duration_months, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
 
@@ -238,7 +238,7 @@ export const insertMembership = async (
           reject(err);
         } else {
           logger.info(
-            `[${uuid} <> ${ip}] -> membership insert response from DB -> [result = ${JSON.stringify(
+            `[${uuid} <> ${ip}] -> Membership Insert Response From DB -> [result = ${JSON.stringify(
               result
             )}]`
           );
@@ -259,7 +259,7 @@ export const updateMembership = async (
   uuid,
   ip
 ) => {
-  logger.info(`[${uuid} <> ${ip}] -> Updating membership entry in DB`);
+  logger.info(`[${uuid} <> ${ip}] -> Updating Membership Entry In DB`);
   return new Promise((resolve, reject) => {
     var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ? and is_deleted = ?`;
 
@@ -280,7 +280,7 @@ export const updateMembership = async (
           reject(err);
         } else {
           logger.info(
-            `[${uuid} <> ${ip}] -> Membership update response from DB -> [result = ${JSON.stringify(
+            `[${uuid} <> ${ip}] -> Membership Update Response From DB -> [result = ${JSON.stringify(
               result
             )}]`
           );
@@ -292,7 +292,7 @@ export const updateMembership = async (
 };
 
 export const readMembership = async (gym_id, client_id, uuid, ip) => {
-  logger.info(`[${uuid} <> ${ip}] -> Reading membership entry in DB`);
+  logger.info(`[${uuid} <> ${ip}] -> Reading Membership Entry From DB`);
   return new Promise((resolve, reject) => {
     var query = `SELECT membership_id, membership_name, membership_price, membership_duration_months FROM membership WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
 
@@ -302,7 +302,7 @@ export const readMembership = async (gym_id, client_id, uuid, ip) => {
         reject(err);
       } else {
         logger.info(
-          `[${uuid} <> ${ip}] -> Membership read response from DB -> [result = ${JSON.stringify(
+          `[${uuid} <> ${ip}] -> Membership Read Response From DB -> [result = ${JSON.stringify(
             result
           )}]`
         );
