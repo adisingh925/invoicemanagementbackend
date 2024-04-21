@@ -202,28 +202,28 @@ router.get("/read/membership/:gymId", verifytoken, async (req, res) => {
 });
 
 /**
- * @post /manager
+ * @post /membership
  */
 router.post(
-  "/delete/manager/:gymId",
+  "/delete/membership/:gymId",
   [
     param("gymId", "Invalid gymId").isInt().toInt(),
-    body("manager_ids")
+    body("membership_ids")
       .isArray()
-      .withMessage("Manager IDs must be an array"),
-    body("manager_ids.*")
+      .withMessage("Membership IDs must be an array"),
+    body("membership_ids.*")
       .isInt()
-      .withMessage("Each Manager ID must be an integer"),
+      .withMessage("Each membership ID must be an integer"),
   ],
   verifytoken,
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Delete Manager Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, manager_ids = ${req.body.manager_ids}]`
+        `[${req.uuid} <> ${req.ip}] -> Delete Memberships Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, membership_ids = ${req.body.membership_ids}]`
       );
 
       await deleteMembership(
-        req.body.manager_ids,
+        req.body.membership_ids,
         req.params.gymId,
         req.id,
         req.uuid,
@@ -231,11 +231,11 @@ router.post(
       );
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Manager Data Successfully Deleted, Returning Response!`
+        `[${req.uuid} <> ${req.ip}] -> Membership Data Successfully Deleted, Returning Response!`
       );
 
       return res.status(200).json({
-        msg: "Manager Data Deleted Successfully!",
+        msg: "Membership Data Deleted Successfully!",
         code: 1,
       });
     } catch (error) {
