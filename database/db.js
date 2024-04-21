@@ -508,7 +508,7 @@ export const insertMember = async (
     var query = `INSERT INTO member (member_name,
       member_email,
       member_phone_number,
-      member_membership_type, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
+      member_membership_type, client_id, gym_id) VALUES (?, ?, ?, ?, ?, ?)`;
 
     connection.query(
       query,

@@ -4,9 +4,13 @@ import dotenv from "dotenv";
 import logger from "../logging/winston.js";
 import { validationResult, body, param } from "express-validator";
 import {
+  deleteMember,
   deleteMembership,
+  insertMember,
   insertMembership,
+  readMember,
   readMembership,
+  updateMember,
   updateMembership,
 } from "../database/db.js";
 import verifytoken from "../middleware/verifyToken.js";
@@ -58,7 +62,7 @@ router.post(
         `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [gym_id = ${req.params.gymId}, member_name = ${member_name}, member_email = ${member_email}, member_phone_number = ${member_phone_number}, member_membership_type = ${member_membership_type}]`
       );
 
-      await insertMembership(
+      await insertMember(
         member_name,
         member_email,
         member_phone_number,
@@ -132,7 +136,7 @@ router.post(
         `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, member_id = ${member_id}, member_name = ${member_name}, member_email = ${member_email}, member_phone_number = ${member_phone_number}, member_membership_type = ${member_membership_type}]`
       );
 
-      await updateMembership(
+      await updateMember(
         member_id,
         member_name,
         member_email,
@@ -167,12 +171,7 @@ router.get("/read/member/:gymId", verifytoken, async (req, res) => {
       `[${req.uuid} <> ${req.ip}] -> Read Member Request Received, Proceeding to Fetch Data!`
     );
 
-    let gymData = await readMembership(
-      req.params.gymId,
-      req.id,
-      req.uuid,
-      req.ip
-    );
+    let gymData = await readMember(req.params.gymId, req.id, req.uuid, req.ip);
 
     logger.info(
       `[${req.uuid} <> ${req.ip}] -> Member Data Successfully Fetched, Returning Response!`
@@ -196,9 +195,7 @@ router.post(
   "/delete/member/:gymId",
   [
     param("gymId", "Invalid gymId").isInt().toInt(),
-    body("member_ids")
-      .isArray()
-      .withMessage("Member IDs must be an array"),
+    body("member_ids").isArray().withMessage("Member IDs must be an array"),
     body("member_ids.*")
       .isInt()
       .withMessage("Each Member ID must be an integer"),
@@ -210,7 +207,7 @@ router.post(
         `[${req.uuid} <> ${req.ip}] -> Delete Member Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, member_ids = ${req.body.member_ids}]`
       );
 
-      await deleteMembership(
+      await deleteMember(
         req.body.member_ids,
         req.params.gymId,
         req.id,
