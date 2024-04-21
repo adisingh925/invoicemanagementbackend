@@ -319,7 +319,9 @@ export const deleteMembership = async (
   uuid,
   ip
 ) => {
-  logger.info(`[${uuid} <> ${ip}] -> Deleting membership entry in DB`);
+  logger.info(
+    `[${uuid} <> ${ip}] -> Deleting Membership Entry In DB by Iterating The Array`
+  );
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < membership_ids.length; i++) {
@@ -334,7 +336,148 @@ export const deleteMembership = async (
             reject(err);
           } else {
             logger.info(
-              `[${uuid} <> ${ip}] -> Membership delete response from DB -> [result = ${JSON.stringify(
+              `[${uuid} <> ${ip}] -> Membership Delete Response From DB -> [result = ${JSON.stringify(
+                result
+              )}]`
+            );
+            resolve(result);
+          }
+        }
+      );
+    }
+  });
+};
+
+/**
+ * Manager Fucntions
+ */
+
+export const insertManager = async (
+  manager_name,
+  manager_phone_number,
+  manager_email,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Creating New Nembership Entry In DB`);
+  return new Promise((resolve, reject) => {
+    var query = `INSERT INTO manager (manager_name,
+      manager_phone_number,
+      manager_email, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
+
+    connection.query(
+      query,
+      [manager_name, manager_phone_number, manager_email, client_id, gym_id],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Manager Insert Response From DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const updateManager = async (
+  manager_id,
+  manager_name,
+  manager_phone_number,
+  manager_email,
+  client_id,
+  gym_id,
+  uuid,
+  ip
+) => {
+  logger.info(`[${uuid} <> ${ip}] -> Updating Manager Entry In DB`);
+  return new Promise((resolve, reject) => {
+    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ? WHERE gym_id = ? and manager_id = ? and client_id = ? and is_deleted = ?`;
+
+    connection.query(
+      query,
+      [
+        manager_name,
+        manager_phone_number,
+        manager_email,
+        gym_id,
+        manager_id,
+        client_id,
+        false,
+      ],
+      function (err, result) {
+        if (err) {
+          logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+          reject(err);
+        } else {
+          logger.info(
+            `[${uuid} <> ${ip}] -> Manager Update Response From DB -> [result = ${JSON.stringify(
+              result
+            )}]`
+          );
+          resolve(result.insertId);
+        }
+      }
+    );
+  });
+};
+
+export const readManager = async (gym_id, client_id, uuid, ip) => {
+  logger.info(`[${uuid} <> ${ip}] -> Reading Manager Entry From DB`);
+  return new Promise((resolve, reject) => {
+    var query = `SELECT manager_id,
+    manager_name,
+    manager_phone_number,
+    manager_email FROM manager WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+
+    connection.query(query, [client_id, gym_id, false], function (err, result) {
+      if (err) {
+        logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+        reject(err);
+      } else {
+        logger.info(
+          `[${uuid} <> ${ip}] -> Manager Read Response From DB -> [result = ${JSON.stringify(
+            result
+          )}]`
+        );
+        resolve(result);
+      }
+    });
+  });
+};
+
+export const deleteManager = async (
+  manager_ids,
+  gym_id,
+  client_id,
+  uuid,
+  ip
+) => {
+  logger.info(
+    `[${uuid} <> ${ip}] -> Deleting Manager Entry In DB by Iterating The Array -> [manager_ids = ${manager_ids}]`
+  );
+
+  return new Promise((resolve, reject) => {
+    for (let i = 0; i < manager_ids.length; i++) {
+      var query = `UPDATE manager SET is_deleted = ? WHERE client_id = ? and gym_id = ? and manager_id = ? and is_deleted = ?`;
+
+      connection.query(
+        query,
+        [true, client_id, gym_id, manager_ids[i], false],
+        function (err, result) {
+          if (err) {
+            logger.error(`[${uuid} <> ${ip}] -> ${err}`);
+            reject(err);
+          } else {
+            logger.info(
+              `[${uuid} <> ${ip}] -> Manager Delete Response From DB -> [result = ${JSON.stringify(
                 result
               )}]`
             );

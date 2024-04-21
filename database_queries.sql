@@ -20,6 +20,7 @@ CREATE TABLE gym (
     gym_phone_number VARCHAR(20),
     gym_email VARCHAR(255),
     client_id INT,
+    is_deleted BOOLEAN DEFAULT FALSE, 
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES CLIENT(client_id)
@@ -34,6 +35,7 @@ CREATE TABLE membership (
     membership_duration_months INT,
     client_id INT,
     gym_id INT,
+    is_deleted BOOLEAN DEFAULT FALSE, 
     insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES CLIENT(client_id),

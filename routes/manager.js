@@ -4,42 +4,36 @@ import dotenv from "dotenv";
 import logger from "../logging/winston.js";
 import { validationResult, body, param } from "express-validator";
 import {
-  deleteMembership,
-  insertMembership,
-  readMembership,
-  updateMembership,
+  deleteManager,
+  insertManager,
+  readManager,
+  updateManager,
 } from "../database/db.js";
 import verifytoken from "../middleware/verifyToken.js";
 dotenv.config();
 
 /**
- * @post /membership
+ * @post /manager
  */
 router.post(
-  "/insert/membership/:gymId",
+  "/insert/manager/:gymId",
   verifytoken,
   [
     param("gymId", "Invalid gymId").isInt().toInt(),
-    body("membership_name", "Name is required").trim().notEmpty().escape(),
-    body(
-      "membership_price",
-      "Price must be a number greater than or equal to 0"
-    )
+    body("manager_name", "Name is required").trim().notEmpty().escape(),
+    body("manager_phone_number", "Phone number must be a valid phone number")
       .trim()
-      .isFloat({ min: 0 })
+      .isMobilePhone()
       .escape(),
-    body(
-      "membership_duration_months",
-      "Duration must be a number between 0 and 12"
-    )
+    body("manager_email", "Email must be a valid email address")
       .trim()
-      .isInt({ min: 0, max: 12 })
+      .isEmail()
       .escape(),
   ],
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Insert Membership Request Received, Validating Body`
+        `[${req.uuid} <> ${req.ip}] -> Insert Manager Request Received, Validating Body`
       );
 
       const result = validationResult(req);
@@ -55,17 +49,16 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const { membership_name, membership_price, membership_duration_months } =
-        req.body;
+      const { manager_name, manager_phone_number, manager_email } = req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [gym_id = ${req.params.gymId}, membership_name = ${membership_name}, membership_price = ${membership_price}, membership_duration_months = ${membership_duration_months}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [gym_id = ${req.params.gymId}, manager_name = ${manager_name}, manager_phone_number = ${manager_phone_number}, manager_email = ${manager_email}]`
       );
 
-      await insertMembership(
-        membership_name,
-        membership_price,
-        membership_duration_months,
+      await insertManager(
+        manager_name,
+        manager_phone_number,
+        manager_email,
         req.id,
         req.params.gymId,
         req.uuid,
@@ -73,11 +66,11 @@ router.post(
       );
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Membership Inserted Successfully!, Returning Response`
+        `[${req.uuid} <> ${req.ip}] -> Manager Inserted Successfully!, Returning Response`
       );
 
       return res.status(200).json({
-        msg: "Membership Inserted Successfully!",
+        msg: "Manager Inserted Successfully!",
         code: 1,
       });
     } catch (error) {
@@ -88,37 +81,27 @@ router.post(
 );
 
 /**
- * @post /membership
+ * @post /manager
  */
 router.post(
-  "/update/membership/:gymId",
+  "/update/manager/:gymId",
   verifytoken,
   [
     param("gymId", "Invalid gymId").isInt().toInt(),
-    body("membership_id", "Membership Id is required")
+    body("manager_name", "Name is required").trim().notEmpty().escape(),
+    body("manager_phone_number", "Phone number must be a valid phone number")
       .trim()
-      .notEmpty()
+      .isMobilePhone()
       .escape(),
-    body("membership_name", "Name is required").trim().notEmpty().escape(),
-    body(
-      "membership_price",
-      "Price must be a number greater than or equal to 0"
-    )
+    body("manager_email", "Email must be a valid email address")
       .trim()
-      .isFloat({ min: 0 })
-      .escape(),
-    body(
-      "membership_duration_months",
-      "Duration must be a number between 0 and 12"
-    )
-      .trim()
-      .isInt({ min: 0, max: 12 })
+      .isEmail()
       .escape(),
   ],
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Update Membership Request Received, Validating Body`
+        `[${req.uuid} <> ${req.ip}] -> Update Manager Request Received, Validating Body`
       );
 
       const result = validationResult(req);
@@ -134,22 +117,18 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const {
-        membership_id,
-        membership_name,
-        membership_price,
-        membership_duration_months,
-      } = req.body;
+      const { manager_id, manager_name, manager_phone_number, manager_email } =
+        req.body;
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, membership_id = ${membership_id}, membership_name = ${membership_name}, membership_price = ${membership_price}, membership_duration_months = ${membership_duration_months}]`
+        `[${req.uuid} <> ${req.ip}] -> Validating Success, Updating Data -> [gym_id = ${req.params.gymId}, manager_id = ${manager_id}, manager_name = ${manager_name}, manager_phone_number = ${manager_phone_number}, manager_email = ${manager_email}]`
       );
 
-      await updateMembership(
-        membership_id,
-        membership_name,
-        membership_price,
-        membership_duration_months,
+      await updateManager(
+        manager_id,
+        manager_name,
+        manager_phone_number,
+        manager_email,
         req.id,
         req.params.gymId,
         req.uuid,
@@ -157,12 +136,12 @@ router.post(
       );
 
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Membership Updated Successfully, Returning Response!`
+        `[${req.uuid} <> ${req.ip}] -> Manager Updated Successfully, Returning Response!`
       );
 
       return res
         .status(200)
-        .json({ msg: "Membership Updated Successfully!", code: 1 });
+        .json({ msg: "Manager Updated Successfully!", code: 1 });
     } catch (error) {
       logger.error(`[${req.uuid} <> ${req.ip}] -> ${error}`);
       return res.status(500).json({ msg: "Internal Server Error!", code: -1 });
@@ -171,27 +150,22 @@ router.post(
 );
 
 /**
- * @post /membership
+ * @post /manager
  */
-router.get("/read/membership/:gymId", verifytoken, async (req, res) => {
+router.get("/read/manager/:gymId", verifytoken, async (req, res) => {
   try {
     logger.info(
-      `[${req.uuid} <> ${req.ip}] -> Read Membership Request Received, Proceeding to Fetch Data!`
+      `[${req.uuid} <> ${req.ip}] -> Read Manager Request Received, Proceeding to Fetch Data!`
     );
 
-    let gymData = await readMembership(
-      req.params.gymId,
-      req.id,
-      req.uuid,
-      req.ip
-    );
+    let gymData = await readManager(req.params.gymId, req.id, req.uuid, req.ip);
 
     logger.info(
-      `[${req.uuid} <> ${req.ip}] -> Membership Data Successfully Fetched, Returning Response!`
+      `[${req.uuid} <> ${req.ip}] -> Manager Data Successfully Fetched, Returning Response!`
     );
 
     return res.status(200).json({
-      msg: "Membership Data Fetched Successfully!",
+      msg: "Manager Data Fetched Successfully!",
       data: gymData,
       code: 1,
     });
@@ -222,7 +196,7 @@ router.post(
         `[${req.uuid} <> ${req.ip}] -> Delete Manager Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, manager_ids = ${req.body.manager_ids}]`
       );
 
-      await deleteMembership(
+      await deleteManager(
         req.body.manager_ids,
         req.params.gymId,
         req.id,
