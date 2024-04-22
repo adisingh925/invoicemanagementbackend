@@ -200,7 +200,7 @@ router.post(
   async (req, res) => {
     try {
       logger.info(
-        `[${req.uuid} <> ${req.ip}] -> Delete Member Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, member_ids = ${req.body.member_ids}]`
+        `[${req.uuid} <> ${req.ip}] -> Delete Member Request Received, Proceeding to Delete Data! -> [gym_id = ${req.params.gymId}, member_ids = ${req.body.member_ids}, client_id = ${req.id}]`
       );
 
       await deleteMember(

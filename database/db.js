@@ -639,7 +639,7 @@ export const deleteMember = async (member_ids, gym_id, client_id, uuid, ip) => {
 
       connection.query(
         query,
-        [true, client_id, gym_id, member_ids[i], false],
+        [client_id, gym_id, member_ids[i]],
         function (err, result) {
           if (err) {
             logger.error(`[${uuid} <> ${ip}] -> ${err}`);
