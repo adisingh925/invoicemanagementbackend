@@ -575,7 +575,7 @@ export const updateMember = async (
         member_id,
         client_id,
         member_membership_type,
-        false
+        false,
       ],
       function (err, result) {
         if (err) {
@@ -602,7 +602,8 @@ export const readMember = async (gym_id, client_id, uuid, ip) => {
     member_email,
     member_phone_number,
     member_membership_type, 
-    insert_time 
+    insert_time,
+    payment_due_date 
     FROM member WHERE client_id = ? and gym_id = ?`;
 
     connection.query(query, [client_id, gym_id], function (err, result) {
@@ -623,7 +624,7 @@ export const readMember = async (gym_id, client_id, uuid, ip) => {
 
 export const deleteMember = async (member_ids, gym_id, client_id, uuid, ip) => {
   logger.info(
-    `[${uuid} <> ${ip}] -> Deleting Member Entry In DB by Iterating The Array -> [manager_ids = ${member_ids}]`
+    `[${uuid} <> ${ip}] -> Deleting Member Entry In DB by Iterating The Array -> [member_ids = ${member_ids}]`
   );
 
   return new Promise((resolve, reject) => {
