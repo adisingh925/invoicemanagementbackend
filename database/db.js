@@ -261,7 +261,7 @@ export const updateMembership = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Membership Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ? and is_deleted = ?`;
+    var query = `UPDATE membership SET membership_name = ?, membership_price = ?, membership_duration_months = ? WHERE gym_id = ? and membership_id = ? and client_id = ?`;
 
     connection.query(
       query,
@@ -272,7 +272,6 @@ export const updateMembership = async (
         gym_id,
         membership_id,
         client_id,
-        false,
       ],
       function (err, result) {
         if (err) {
@@ -294,9 +293,9 @@ export const updateMembership = async (
 export const readMembership = async (gym_id, client_id, uuid, ip) => {
   logger.info(`[${uuid} <> ${ip}] -> Reading Membership Entry From DB`);
   return new Promise((resolve, reject) => {
-    var query = `SELECT membership_id, membership_name, membership_price, membership_duration_months FROM membership WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+    var query = `SELECT membership_id, membership_name, membership_price, membership_duration_months FROM membership WHERE client_id = ? and gym_id = ?`;
 
-    connection.query(query, [client_id, gym_id, false], function (err, result) {
+    connection.query(query, [client_id, gym_id], function (err, result) {
       if (err) {
         logger.error(`[${uuid} <> ${ip}] -> ${err}`);
         reject(err);
@@ -325,11 +324,11 @@ export const deleteMembership = async (
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < membership_ids.length; i++) {
-      var query = `UPDATE membership SET is_deleted = ? WHERE client_id = ? and gym_id = ? and membership_id = ? and is_deleted = ?`;
+      var query = `DELETE FROM membership WHERE client_id = ? and gym_id = ? and membership_id = ?`;
 
       connection.query(
         query,
-        [true, client_id, gym_id, membership_ids[i], false],
+        [client_id, gym_id, membership_ids[i]],
         function (err, result) {
           if (err) {
             logger.error(`[${uuid} <> ${ip}] -> ${err}`);
