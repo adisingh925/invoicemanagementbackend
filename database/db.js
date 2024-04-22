@@ -364,7 +364,10 @@ export const insertManager = async (
   return new Promise((resolve, reject) => {
     var query = `INSERT INTO manager (manager_name,
       manager_phone_number,
-      manager_email, client_id, gym_id) VALUES (?, ?, ?, ?, ?)`;
+      manager_email, 
+      client_id, 
+      gym_id
+    ) VALUES (?, ?, ?, ?, ?)`;
 
     connection.query(
       query,
@@ -398,7 +401,7 @@ export const updateManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Manager Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ? WHERE gym_id = ? and manager_id = ? and client_id = ? and is_deleted = ?`;
+    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ? WHERE gym_id = ? and manager_id = ? and client_id = ?`;
 
     connection.query(
       query,
@@ -409,7 +412,6 @@ export const updateManager = async (
         gym_id,
         manager_id,
         client_id,
-        false,
       ],
       function (err, result) {
         if (err) {
@@ -434,9 +436,11 @@ export const readManager = async (gym_id, client_id, uuid, ip) => {
     var query = `SELECT manager_id,
     manager_name,
     manager_phone_number,
-    manager_email FROM manager WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+    manager_email 
+    FROM manager 
+    WHERE client_id = ? and gym_id = ?`;
 
-    connection.query(query, [client_id, gym_id, false], function (err, result) {
+    connection.query(query, [client_id, gym_id], function (err, result) {
       if (err) {
         logger.error(`[${uuid} <> ${ip}] -> ${err}`);
         reject(err);
@@ -465,11 +469,14 @@ export const deleteManager = async (
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < manager_ids.length; i++) {
-      var query = `UPDATE manager SET is_deleted = ? WHERE client_id = ? and gym_id = ? and manager_id = ? and is_deleted = ?`;
+      var query = `DELETE FROM manager 
+      WHERE client_id = ? 
+      and gym_id = ? 
+      and manager_id = ?`;
 
       connection.query(
         query,
-        [true, client_id, gym_id, manager_ids[i], false],
+        [client_id, gym_id, manager_ids[i]],
         function (err, result) {
           if (err) {
             logger.error(`[${uuid} <> ${ip}] -> ${err}`);
