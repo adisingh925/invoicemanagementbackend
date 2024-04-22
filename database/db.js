@@ -588,7 +588,9 @@ export const readMember = async (gym_id, client_id, uuid, ip) => {
     member_name,
     member_email,
     member_phone_number,
-    member_membership_type FROM member WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+    member_membership_type, 
+    insert_time 
+    FROM member WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
 
     connection.query(query, [client_id, gym_id, false], function (err, result) {
       if (err) {
