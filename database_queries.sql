@@ -35,7 +35,6 @@ CREATE TABLE membership (
     membership_duration_months INT,
     client_id INT,
     gym_id INT,
-    is_deleted BOOLEAN DEFAULT FALSE, 
     insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES CLIENT(client_id),
@@ -67,12 +66,13 @@ CREATE TABLE manager (
     manager_email VARCHAR(255) UNIQUE,
     client_id INT,
     gym_id INT,
-    is_deleted BOOLEAN DEFAULT FALSE, 
     insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES CLIENT(client_id),
     FOREIGN KEY (gym_id) REFERENCES gym(gym_id)
 );
+
+DROP TABLE manager;
 
 CREATE TABLE MEMBER (
     member_id INT AUTO_INCREMENT PRIMARY KEY,
