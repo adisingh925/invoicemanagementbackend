@@ -508,7 +508,10 @@ export const insertMember = async (
     var query = `INSERT INTO member (member_name,
       member_email,
       member_phone_number,
-      member_membership_type, client_id, gym_id) VALUES (?, ?, ?, ?, ?, ?)`;
+      member_membership_type, 
+      client_id, 
+      gym_id
+    ) VALUES (?, ?, ?, ?, ?, ?)`;
 
     connection.query(
       query,
@@ -550,7 +553,16 @@ export const updateMember = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Member Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE member SET member_name = ?, member_phone_number = ?, member_email = ?, member_membership_type = ? WHERE gym_id = ? and member_id = ? and client_id = ? and is_deleted = ?`;
+    var query = `UPDATE member SET 
+    member_name = ?, 
+    member_phone_number = ?, 
+    member_email = ?, 
+    member_membership_type = ? 
+    WHERE 
+    gym_id = ? 
+    and member_id = ? 
+    and client_id = ?
+    and (SELECT is_deleted from membership WHERE membership_id = ?) = ?`;
 
     connection.query(
       query,
@@ -562,7 +574,8 @@ export const updateMember = async (
         gym_id,
         member_id,
         client_id,
-        false,
+        member_membership_type,
+        false
       ],
       function (err, result) {
         if (err) {
@@ -590,9 +603,9 @@ export const readMember = async (gym_id, client_id, uuid, ip) => {
     member_phone_number,
     member_membership_type, 
     insert_time 
-    FROM member WHERE client_id = ? and gym_id = ? and is_deleted = ?`;
+    FROM member WHERE client_id = ? and gym_id = ?`;
 
-    connection.query(query, [client_id, gym_id, false], function (err, result) {
+    connection.query(query, [client_id, gym_id], function (err, result) {
       if (err) {
         logger.error(`[${uuid} <> ${ip}] -> ${err}`);
         reject(err);
@@ -615,7 +628,7 @@ export const deleteMember = async (member_ids, gym_id, client_id, uuid, ip) => {
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < member_ids.length; i++) {
-      var query = `UPDATE member SET is_deleted = ? WHERE client_id = ? and gym_id = ? and member_id = ? and is_deleted = ?`;
+      var query = `DELETE FROM member WHERE client_id = ? and gym_id = ? and member_id = ?`;
 
       connection.query(
         query,
