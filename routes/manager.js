@@ -29,6 +29,9 @@ router.post(
       .trim()
       .isEmail()
       .escape(),
+    body("manager_password", "Password must be atleast 6 characters")
+      .isLength({ min: 6 })
+      .escape(),
   ],
   async (req, res) => {
     try {
@@ -49,7 +52,12 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const { manager_name, manager_phone_number, manager_email } = req.body;
+      const {
+        manager_name,
+        manager_phone_number,
+        manager_email,
+        manager_password,
+      } = req.body;
 
       logger.info(
         `[${req.uuid} <> ${req.ip}] -> Validating Success, Inserting Data -> [gym_id = ${req.params.gymId}, manager_name = ${manager_name}, manager_phone_number = ${manager_phone_number}, manager_email = ${manager_email}]`
@@ -59,6 +67,7 @@ router.post(
         manager_name,
         manager_phone_number,
         manager_email,
+        manager_password,
         req.id,
         req.params.gymId,
         req.uuid,
@@ -97,6 +106,9 @@ router.post(
       .trim()
       .isEmail()
       .escape(),
+    body("manager_password", "Password must be atleast 6 characters")
+      .isLength({ min: 6 })
+      .escape(),
   ],
   async (req, res) => {
     try {
@@ -117,7 +129,7 @@ router.post(
         return res.status(400).json({ errors: result.array() });
       }
 
-      const { manager_id, manager_name, manager_phone_number, manager_email } =
+      const { manager_id, manager_name, manager_phone_number, manager_email, manager_password } =
         req.body;
 
       logger.info(
@@ -129,6 +141,7 @@ router.post(
         manager_name,
         manager_phone_number,
         manager_email,
+        manager_password,
         req.id,
         req.params.gymId,
         req.uuid,
@@ -182,9 +195,7 @@ router.post(
   "/delete/manager/:gymId",
   [
     param("gymId", "Invalid gymId").isInt().toInt(),
-    body("manager_ids")
-      .isArray()
-      .withMessage("Manager IDs must be an array"),
+    body("manager_ids").isArray().withMessage("Manager IDs must be an array"),
     body("manager_ids.*")
       .isInt()
       .withMessage("Each Manager ID must be an integer"),

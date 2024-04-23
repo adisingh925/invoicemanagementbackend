@@ -355,6 +355,7 @@ export const insertManager = async (
   manager_name,
   manager_phone_number,
   manager_email,
+  manager_password,
   client_id,
   gym_id,
   uuid,
@@ -362,16 +363,25 @@ export const insertManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Creating New Nembership Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO manager (manager_name,
+    var query = `INSERT INTO manager (
+      manager_name,
       manager_phone_number,
-      manager_email, 
+      manager_email,
+      manager_password, 
       client_id, 
       gym_id
-    ) VALUES (?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?)`;
 
     connection.query(
       query,
-      [manager_name, manager_phone_number, manager_email, client_id, gym_id],
+      [
+        manager_name,
+        manager_phone_number,
+        manager_email,
+        manager_password,
+        client_id,
+        gym_id,
+      ],
       function (err, result) {
         if (err) {
           logger.error(`[${uuid} <> ${ip}] -> ${err}`);
@@ -394,6 +404,7 @@ export const updateManager = async (
   manager_name,
   manager_phone_number,
   manager_email,
+  manager_password,
   client_id,
   gym_id,
   uuid,
@@ -401,7 +412,7 @@ export const updateManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Manager Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ? WHERE gym_id = ? and manager_id = ? and client_id = ?`;
+    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ?, manager_password = ? WHERE gym_id = ? and manager_id = ? and client_id = ?`;
 
     connection.query(
       query,
@@ -409,6 +420,7 @@ export const updateManager = async (
         manager_name,
         manager_phone_number,
         manager_email,
+        manager_password,
         gym_id,
         manager_id,
         client_id,
@@ -436,7 +448,8 @@ export const readManager = async (gym_id, client_id, uuid, ip) => {
     var query = `SELECT manager_id,
     manager_name,
     manager_phone_number,
-    manager_email 
+    manager_email,
+    manager_password 
     FROM manager 
     WHERE client_id = ? and gym_id = ?`;
 
