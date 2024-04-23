@@ -412,12 +412,15 @@ export const updateManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Manager Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE manager 
+    var query = `
+    UPDATE manager 
     SET manager_name = ?, 
     manager_phone_number = ?, 
     manager_email = ?, 
     manager_password = ? 
-    WHERE gym_id = ? and manager_id = ? and client_id = ?`;
+    WHERE gym_id = ? 
+    and manager_id = ? 
+    and client_id = ?`;
 
     connection.query(
       query,
@@ -450,13 +453,16 @@ export const updateManager = async (
 export const readManager = async (gym_id, client_id, uuid, ip) => {
   logger.info(`[${uuid} <> ${ip}] -> Reading Manager Entry From DB`);
   return new Promise((resolve, reject) => {
-    var query = `SELECT manager_id,
+    var query = `
+    SELECT manager_id,
     manager_name,
     manager_phone_number,
     manager_email,
     manager_password 
     FROM manager 
-    WHERE client_id = ? and gym_id = ?`;
+    WHERE 
+    client_id = ? 
+    and gym_id = ?`;
 
     connection.query(query, [client_id, gym_id], function (err, result) {
       if (err) {
@@ -487,7 +493,8 @@ export const deleteManager = async (
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < manager_ids.length; i++) {
-      var query = `DELETE FROM manager 
+      var query = `
+      DELETE FROM manager 
       WHERE client_id = ? 
       and gym_id = ? 
       and manager_id = ?`;
@@ -578,7 +585,8 @@ export const updateMember = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Member Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE member SET 
+    var query = `
+    UPDATE member SET 
     member_name = ?, 
     member_phone_number = ?, 
     member_email = ?, 
