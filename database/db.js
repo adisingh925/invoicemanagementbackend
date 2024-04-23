@@ -348,7 +348,7 @@ export const deleteMembership = async (
 };
 
 /**
- * Manager Fucntions
+ * Manager Functions
  */
 
 export const insertManager = async (
@@ -412,7 +412,12 @@ export const updateManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Updating Manager Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `UPDATE manager SET manager_name = ?, manager_phone_number = ?, manager_email = ?, manager_password = ? WHERE gym_id = ? and manager_id = ? and client_id = ?`;
+    var query = `UPDATE manager 
+    SET manager_name = ?, 
+    manager_phone_number = ?, 
+    manager_email = ?, 
+    manager_password = ? 
+    WHERE gym_id = ? and manager_id = ? and client_id = ?`;
 
     connection.query(
       query,
@@ -524,7 +529,8 @@ export const insertMember = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Creating New Member Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO member (member_name,
+    var query = `INSERT INTO member (
+      member_name,
       member_email,
       member_phone_number,
       member_membership_type, 
@@ -581,7 +587,11 @@ export const updateMember = async (
     gym_id = ? 
     and member_id = ? 
     and client_id = ?
-    and (SELECT is_deleted from membership WHERE membership_id = ?) = ?`;
+    and EXISTS (
+      SELECT 1
+      FROM membership
+      WHERE membership_id = ?
+    )`;
 
     connection.query(
       query,
@@ -594,7 +604,6 @@ export const updateMember = async (
         member_id,
         client_id,
         member_membership_type,
-        false,
       ],
       function (err, result) {
         if (err) {
