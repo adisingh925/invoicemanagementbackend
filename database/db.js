@@ -363,7 +363,8 @@ export const insertManager = async (
 ) => {
   logger.info(`[${uuid} <> ${ip}] -> Creating New Nembership Entry In DB`);
   return new Promise((resolve, reject) => {
-    var query = `INSERT INTO manager (
+    var query = `
+    INSERT INTO manager (
       manager_name,
       manager_phone_number,
       manager_email,
